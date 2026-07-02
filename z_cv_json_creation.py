@@ -9,7 +9,7 @@ import z_text_preprocess
 
 # Catching all names in a folder
 def file_name(folder):
-    names = [os.path.splitext(f)[0] for f in os.listdir(folder) if f.endswith(".pdf") ]
+    names = [f for f in os.listdir(folder) if f.endswith(".pdf") ]
     return names
 
 
