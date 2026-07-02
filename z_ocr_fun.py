@@ -11,7 +11,7 @@ def extraction(path):
     for page in doc:
         text = text + page.get_text()
     text1 = re.sub("\n"," ",text)
-    return text1
+    return text1.strip()
 
 
 # OCR Extraction (PDF - SCANNED DOC)

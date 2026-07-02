@@ -73,9 +73,11 @@ def personal_data(filepath):
 
     return preprocess(extracted_data,name_loc)
 
+print(personal_data("y_Associate Data Scientist Induwara Dilshan.pdf"))
+
 # Checking part
-result = personal_data("y_Associate Data Scientist Induwara Dilshan.pdf")
-if result:
-    print(result)
-else:
-    print("Personal Data Extraction is failed!!!")
+# result = personal_data("y_Associate Data Scientist Induwara Dilshan.pdf")
+# if result:
+#     print(result)
+# else:
+#     print("Personal Data Extraction is failed!!!")

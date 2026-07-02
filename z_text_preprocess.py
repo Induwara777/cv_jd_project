@@ -76,27 +76,7 @@ CV TEXT:
 
     return data
 
-#name extrcation
-def all_fn(x):
-    text = re.sub('\n'," ",extraction(f"{x}").strip()[:1000])
-    name = all(text)
-    return name
-
-
-# Final personal dataset
-def preprocess(y):
-    text = extraction(f"{y}")[:1000].strip()
-    name = all_fn(f"{y}")
-
-    data = {
-        "name":list(name.values())[0],
-        "phone": ph_num(text)[0],
-        "email":emails(text)[0],
-        "location":list(name.values())[1]
-    }
-    return data
-
-#load nlp library
+# load nlp library
 nlp = spacy.load("en_core_web_sm")
 
 # Name  Masked (spacy)
@@ -108,19 +88,40 @@ def person(text):
 
     return text
 
-# Final llm text output
-def llm_text(text,y):
-    pattern = "|".join(map(re.escape, list(preprocess(y).values())))
-    masked = re.sub(pattern, "[MASKED]", text)
-    masked1 = emails_masked(masked)
-    masked2 = ph_num_masked(masked1)
-    masked3 = person(masked2)
-    return masked3
+#name extrcation
+# def all_fn(x):
+#     text = re.sub('\n'," ",extraction(f"{x}").strip()[:1000])
+#     name = all(text)
+#     return name
 
-# Run script
-if __name__ == "__main__":
-    text_data = extraction("y_Associate Data Scientist Induwara Dilshan.pdf")
-    final_data = llm_text(text=text_data,y="y_Associate Data Scientist Induwara Dilshan.pdf")
-    # personal_data = preprocess("y_Associate Data Scientist Induwara Dilshan.pdf")
-    print(final_data.strip())
-    # print(personal_data)
+
+# # Final personal dataset
+# def preprocess(y):
+#     text = extraction(f"{y}")[:1000].strip()
+#     name = all_fn(f"{y}")
+
+#     data = {
+#         "name":list(name.values())[0],
+#         "phone": ph_num(text)[0],
+#         "email":emails(text)[0],
+#         "location":list(name.values())[1]
+#     }
+#     return data
+
+
+# # Final llm text output
+# def llm_text(text,y):
+#     pattern = "|".join(map(re.escape, list(preprocess(y).values())))
+#     masked = re.sub(pattern, "[MASKED]", text)
+#     masked1 = emails_masked(masked)
+#     masked2 = ph_num_masked(masked1)
+#     masked3 = person(masked2)
+#     return masked3
+
+# # Run script
+# if __name__ == "__main__":
+#     text_data = extraction("y_Associate Data Scientist Induwara Dilshan.pdf")
+#     final_data = llm_text(text=text_data,y="y_Associate Data Scientist Induwara Dilshan.pdf")
+#     # personal_data = preprocess("y_Associate Data Scientist Induwara Dilshan.pdf")
+#     print(final_data.strip())
+#     # print(personal_data)
