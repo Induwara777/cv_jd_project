@@ -1,0 +1,30 @@
+{
+    "job_title":"",
+    "job_state":"",
+    "job_location":"",
+    "job_type":"",
+
+    "education":{
+        "degree_status" :"",
+        "required_degrees" :[],
+        "preferred_degrees":[],
+        "certificates" :[]
+    },
+
+    "experience":{
+        "min_experience_years" :null
+    },
+    "skills":{
+        "technical_required" :[],
+        "technical_preferred":[],
+        "soft_required":[],
+        "soft_preferred":[]
+    },
+    "responsibilities":[],
+    "compensation": {
+        "min_salary":null,
+        "max_salary":null
+    },
+    "keywords":[]
+
+}

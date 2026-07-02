@@ -1,0 +1,57 @@
+{
+    "job_title": "Machine Learning Engineer",
+    "job_state": null,
+    "job_location": "Sri Lanka",
+    "job_type": null,
+    "education": {
+        "degree_status": null,
+        "required_degrees": [
+            "Bachelor's degree in Computer Science",
+            "Bachelor's degree in Data Science"
+        ],
+        "preferred_degrees": [],
+        "certificates": []
+    },
+    "experience": {
+        "min_experience_years": 2
+    },
+    "skills": {
+        "technical_required": [
+            "Python",
+            "Scikit-learn",
+            "TensorFlow",
+            "PyTorch",
+            "SQL",
+            "APIs"
+        ],
+        "technical_preferred": [
+            "Git",
+            "Docker",
+            "MLOps",
+            "CI/CD pipelines",
+            "Kubernetes",
+            "Spark/PySpark",
+            "MLflow",
+            "Kubeflow",
+            "real-time/streaming data systems"
+        ],
+        "soft_required": [],
+        "soft_preferred": []
+    },
+    "responsibilities": [
+        "Develop, test, and deploy machine learning models",
+        "Build and maintain scalable ML pipelines",
+        "Collaborate with data scientists to optimize and productionize models",
+        "Monitor model performance and retrain when necessary",
+        "Ensure code quality, versioning, and documentation"
+    ],
+    "compensation": {
+        "min_salary": null,
+        "max_salary": null
+    },
+    "keywords": [
+        "Machine Learning",
+        "Software Engineering",
+        "Data Science"
+    ]
+}

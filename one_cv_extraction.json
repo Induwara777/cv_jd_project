@@ -1,0 +1,155 @@
+{
+    "candidate_name": "INDUWARA DILSHAN",
+    "candidate_contact": {
+        "email": "induwaradilshan7@gmail.com",
+        "phone": "076 4390379",
+        "location": "Kurunegala"
+    },
+    "profile_summary": "Associate Data Scientist/ AI Engineer with hands-on internship experience in machine learning and NLP. Skilled in building predictive models, time series forecasting, and dashboards with data analysis using Python and modern AI tools.",
+    "technical_skills": [
+        "Python",
+        "R",
+        "C",
+        "Machine Learning",
+        "Deep Learning",
+        "Transformer",
+        "LLMs",
+        "Time Series Prediction",
+        "MLOps",
+        "CI/ CD pipeline",
+        "A/B Testing",
+        "FastAPI Framework",
+        "RAG",
+        "Embedding",
+        "Fine Tuning LLM",
+        "OpenAI API",
+        "Llama API",
+        "MySQL",
+        "Azure",
+        "Power BI",
+        "Web Scraping"
+    ],
+    "soft_skills": [
+        "Communication Skill",
+        "Problem-Solving Skill",
+        "Critical Thinking",
+        "Effective Communication",
+        "Presentation skills",
+        "Time Management"
+    ],
+    "education": {
+        "highest_qualification": "Bachelor of Science in Statistics (Special)",
+        "ol": {
+            "year": null,
+            "subjects": []
+        },
+        "al": {
+            "year": null,
+            "stream": null,
+            "subjects": [],
+            "z_score": null
+        },
+        "degrees": [
+            {
+                "degree_name": "Bachelor of Science in Statistics (Special)",
+                "university": "University of Peradeniya",
+                "gpa": 3.61
+            }
+        ],
+        "certificates": []
+    },
+    "experience": {
+        "total_experience_years": 0.5,
+        "jobs": [
+            {
+                "job_title": "Data Science Internship",
+                "company": "Central Bank of Sri-Lanka",
+                "duration": "11/2025 \u2013 04/2026"
+            }
+        ]
+    },
+    "projects": [
+        {
+            "project_name": "NLP-Based CCPI Predicting System Using Financial Articles",
+            "project_details": "Preprocessing articles and generating FinBERT embeddings of articles. Applied topic modeling to the BERTopic model with tuned UMAP and HDBSCAN. Constructed monthly topic-articles probabilities. Predict the CCPI value using microeconimic data.",
+            "keywords": [
+                "NLP",
+                "CCPI",
+                "FinBERT",
+                "BERTopic",
+                "UMAP",
+                "HDBSCAN"
+            ]
+        },
+        {
+            "project_name": "Automated Vehicle Market Data Pipeline using R",
+            "project_details": "Implemented modular scraping functions, dynamic user-agent rotation, HTTP retry logic, and multi-session parallelization to generate analysis-ready datasets for market analytics.",
+            "keywords": [
+                "R",
+                "Web Scraping",
+                "Data Pipeline"
+            ]
+        },
+        {
+            "project_name": "Sentiment Analysis for Tweet Classification",
+            "project_details": "Developed LSTM and BiLSTM neural network models to classify tweets as positive or negative. Built a Random Forest model and achieved 86.68% accuracy.",
+            "keywords": [
+                "Sentiment Analysis",
+                "LSTM",
+                "BiLSTM",
+                "Random Forest"
+            ]
+        },
+        {
+            "project_name": "Predictive Modeling for Income Classification of Adults in the USA",
+            "project_details": "Developed an LSTM model to predict future values of multiple variables.",
+            "keywords": [
+                "Predictive Modeling",
+                "LSTM",
+                "Income Classification"
+            ]
+        },
+        {
+            "project_name": "Stock Price Prediction of Apple Inc.",
+            "project_details": null,
+            "keywords": [
+                "Stock Price Prediction",
+                "Apple Inc."
+            ]
+        },
+        {
+            "project_name": "Multivariate Data Analysis of Framingham Heart Study Dataset",
+            "project_details": "Applied principal component analysis, Linear discriminant analysis, Factor analysis, and K-Means clustering. Identified three principal components, three factors.",
+            "keywords": [
+                "Multivariate Data Analysis",
+                "Framingham Heart Study Dataset",
+                "PCA",
+                "LDA",
+                "K-Means"
+            ]
+        },
+        {
+            "project_name": "Clustering of the Vehicle dataset",
+            "project_details": "Reduced 10K+ high-cardinality categorical labels using LLaMA 8B. Applied CatBoost encoding and dimensionality reduction such as UMAP, PCA, Truncated SVD. Compared K-Means, Mini-Batch K-Means, and HDBSCAN cluster algorithms. Selected HDBSCAN based on the highest silhouette score and lowest deviation.",
+            "keywords": [
+                "Clustering",
+                "Vehicle dataset",
+                "LLaMA",
+                "CatBoost",
+                "UMAP",
+                "PCA",
+                "Truncated SVD"
+            ]
+        },
+        {
+            "project_name": "Automated Economic Report Validation System",
+            "project_details": "Automated report checking tasks. Converted PDF reports into OCR-processed raw text. Applied preprocessing techniques to noisy OCR raw text outputs. Extracted financial data values using LLaMA 8B. Created data frames. Generated structured Excel validation outputs for audit-ready reporting.",
+            "keywords": [
+                "Automated Economic Report Validation",
+                "LLaMA",
+                "OCR",
+                "PDF"
+            ]
+        }
+    ]
+}

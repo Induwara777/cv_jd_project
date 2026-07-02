@@ -1,0 +1,88 @@
+{
+    "projects": [
+        {
+            "project_name": "NLP-Based CCPI Predicting System Using Financial Articles",
+            "project_details": "Preprocessing articles and generating FinBERT embeddings of articles, applied topic modeling to the BERTopic model with tuned UMAP and HDBSCAN, constructed monthly topic-articles probabilities, and predicted the CCPI value using microeconimic data.",
+            "keywords": [
+                "NLP",
+                "FinBERT",
+                "BERTopic",
+                "UMAP",
+                "HDBSCAN",
+                "Microeconimic Data"
+            ]
+        },
+        {
+            "project_name": "Automated Vehicle Market Data Pipeline using R",
+            "project_details": "Implemented modular scraping functions, dynamic user-agent rotation, HTTP retry logic, and multi-session parallelization to generate analysis-ready datasets for market analytics.",
+            "keywords": [
+                "Web Scraping",
+                "R",
+                "Modular Scraping",
+                "User-Agent Rotation"
+            ]
+        },
+        {
+            "project_name": "Sentiment Analysis for Tweet Classification",
+            "project_details": "Developed LSTM and BiLSTM neural network models to classify tweets as positive or negative, and built a Random Forest model achieving 86.68% accuracy.",
+            "keywords": [
+                "Sentiment Analysis",
+                "LSTM",
+                "BiLSTM",
+                "Random Forest"
+            ]
+        },
+        {
+            "project_name": "Predictive Modeling for Income Classification of Adults in the USA",
+            "project_details": "Developed an LSTM model to predict future values of multiple variables.",
+            "keywords": [
+                "Predictive Modeling",
+                "LSTM",
+                "Income Classification"
+            ]
+        },
+        {
+            "project_name": "Stock Price Prediction of Apple Inc.",
+            "project_details": "Developed a model to predict stock prices.",
+            "keywords": [
+                "Stock Price Prediction",
+                "Time Series Forecasting"
+            ]
+        },
+        {
+            "project_name": "Multivariate Data Analysis of Framingham Heart Study Dataset",
+            "project_details": "Applied principal component analysis, linear discriminant analysis, factor analysis, and K-Means clustering, and identified three principal components and three factors.",
+            "keywords": [
+                "Multivariate Data Analysis",
+                "Principal Component Analysis",
+                "Linear Discriminant Analysis",
+                "Factor Analysis",
+                "K-Means Clustering"
+            ]
+        },
+        {
+            "project_name": "Clustering of the Vehicle dataset",
+            "project_details": "Reduced 10K+ high-cardinality categorical labels using LLaMA 8B, applied CatBoost encoding and dimensionality reduction such as UMAP, PCA, Truncated SVD, and compared K-Means, Mini-Batch K-Means, and HDBSCAN cluster algorithms.",
+            "keywords": [
+                "Clustering",
+                "LLaMA 8B",
+                "CatBoost Encoding",
+                "UMAP",
+                "PCA",
+                "Truncated SVD",
+                "K-Means",
+                "HDBSCAN"
+            ]
+        },
+        {
+            "project_name": "Automated Economic Report Validation System",
+            "project_details": "Automated report checking tasks, converted PDF reports into OCR-processed raw text, applied preprocessing techniques to noisy OCR raw text outputs, extracted financial data values using LLaMA 8B, and generated structured Excel validation outputs for audit-ready reporting.",
+            "keywords": [
+                "Automated Report Validation",
+                "OCR",
+                "LLaMA 8B",
+                "Financial Data Extraction"
+            ]
+        }
+    ]
+}

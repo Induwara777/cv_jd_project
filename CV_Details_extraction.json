@@ -1,0 +1,190 @@
+{
+    "candidate_name": "INDUWARA DILSHAN",
+    "candidate_contact": {
+        "email": "induwaradilshan7@gmail.com",
+        "phone": "076 4390379",
+        "location": "Kurunegala",
+        "linkedin": null,
+        "github": "INDUWARA DILSHAN",
+        "portfolio": null
+    },
+    "professional_summary": "Associate Data Scientist/ AI Engineer with hands-on internship experience in machine learning and NLP. Skilled in building predictive models, time series forecasting, and dashboards with data analysis using Python and modern AI tools.",
+    "seniority_level": null,
+    "current_job_title": "Data Science Engineer",
+    "current_company": null,
+    "target_job_titles": [],
+    "education": {
+        "degree_status": null,
+        "highest_qualification": "Bachelor of Science in Statistics (Special)",
+        "ol": {
+            "completed": false,
+            "year": null,
+            "school": null,
+            "no_of_passes": null,
+            "subjects": []
+        },
+        "al": {
+            "completed": false,
+            "year": null,
+            "school": null,
+            "stream": null,
+            "subjects": [],
+            "z_score": null,
+            "district_rank": null
+        },
+        "degrees": [
+            {
+                "degree_level": "Bachelor",
+                "degree_name": "Bachelor of Science in Statistics (Special)",
+                "field_of_study": "Statistics",
+                "university": "University of Peradeniya",
+                "country": "Sri Lanka",
+                "graduation_year": null,
+                "gpa": 3.61,
+                "gpa_scale": null,
+                "is_completed": true
+            }
+        ],
+        "certificates": []
+    },
+    "experience": [
+        {
+            "total_experience_years": null,
+            "total_experience_months": null,
+            "jobs": [
+                {
+                    "job_title": "Data Science Internship",
+                    "seniority_level": null,
+                    "company": "Central Bank of Sri-Lanka",
+                    "industry": null,
+                    "location": null,
+                    "job_type": null,
+                    "start_date": "11/2025",
+                    "end_date": "04/2026",
+                    "duration_months": null,
+                    "is_current": false,
+                    "responsibilities": [],
+                    "technologies_used": [],
+                    "achievements": []
+                }
+            ]
+        }
+    ],
+    "skills": {
+        "technical_skills": [
+            "Python",
+            "R",
+            "C",
+            "Machine Learning",
+            "Deep Learning",
+            "Time Series Prediction",
+            "MLOps",
+            "CI/CD pipeline",
+            "A/B Testing",
+            "FastAPI Framework",
+            "OpenAI API",
+            "Llama API"
+        ],
+        "soft_skills": [
+            "Communication Skill",
+            "Problem-Solving Skill",
+            "Critical Thinking",
+            "Effective Communication",
+            "Presentation skills",
+            "Time Management"
+        ]
+    },
+    "projects": [
+        {
+            "project_name": "NLP-Based CCPI Predicting System Using Financial Articles",
+            "project_type": null,
+            "description": "Preprocessing articles and generating FinBERT embeddings of articles. Applied topic modeling to the BERTopic model with tuned UMAP and HDBSCAN. Constructed monthly topic-articles probabilities. Predict the CCPI value using microeconimic data.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Automated Vehicle Market Data Pipeline using R",
+            "project_type": null,
+            "description": "Implemented modular scraping functions, dynamic user-agent rotation, HTTP retry logic, and multi-session parallelization to generate analysis-ready datasets for market analytics.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Sentiment Analysis for Tweet Classification",
+            "project_type": null,
+            "description": "Developed LSTM and BiLSTM neural network models to classify tweets as positive or negative. Built a Random Forest model and achieved 86.68% accuracy.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Predictive Modeling for Income Classification of Adults in the USA",
+            "project_type": null,
+            "description": "Developed an LSTM model to predict future values of multiple variables.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Stock Price Prediction of Apple Inc.",
+            "project_type": null,
+            "description": null,
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Multivariate Data Analysis of Framingham Heart Study Dataset",
+            "project_type": null,
+            "description": "Applied principal component analysis, Linear discriminant analysis, Factor analysis, and K-Means clustering. Identified three principal components, three factors.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        },
+        {
+            "project_name": "Clustering of the Vehicle dataset",
+            "project_type": null,
+            "description": "Reduced 10K+ high-cardinality categorical labels using LLaMA 8B. Applied CatBoost encoding and dimensionality reduction such as UMAP, PCA, Truncated SVD. Compared K-Means, Mini-Batch K-Means, and HDBSCAN cluster algorithms. Selected HDBSCAN based on the highest silhouette score and lowest deviation.",
+            "role": null,
+            "technologies_used": [],
+            "domain": null,
+            "outcome": null,
+            "url": null,
+            "is_personal": false,
+            "is_open_source": false,
+            "is_academic": false
+        }
+    ]
+}

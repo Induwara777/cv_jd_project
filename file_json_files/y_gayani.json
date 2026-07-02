@@ -1,0 +1,89 @@
+{
+    "education": {
+        "highest_qualification": "degree",
+        "ol": {
+            "year": null,
+            "subjects": [
+                {
+                    "subject": "",
+                    "grade": ""
+                }
+            ]
+        },
+        "al": {
+            "year": 2022,
+            "stream": "Science",
+            "subjects": [
+                {
+                    "subject": "Physics",
+                    "grade": "B"
+                },
+                {
+                    "subject": "Chemistry",
+                    "grade": "B"
+                },
+                {
+                    "subject": "Biology",
+                    "grade": "C"
+                }
+            ],
+            "z_score": 1.2316
+        },
+        "degrees": [
+            {
+                "degree_name": "B.Sc. Honours in Optometry",
+                "university": "University of Sri Jayawardenapura",
+                "gpa": null
+            }
+        ]
+    },
+    "Technical_skills": "Subjective refraction, Objective refraction, Colour vision test, Vision and visual acuity check, Soft and hard contact lens fitting, Test for stereopsis, Slit lamp, keratometer, focimeter use",
+    "soft_skills": "Teamwork, Communication, Event coordination, Peer collaboration, Time management, Leadership, Community service, Problem-solving, Adaptability, Responsibility",
+    "projects": [
+        {
+            "project_name": "Eye Camps",
+            "project_details": "Actively participated as an Eye Checker in community eye camps, conducted basic vision assessments, assisted in identifying common eye conditions, and supported the medical team in delivering community eye care services.",
+            "keywords": [
+                "Optometry",
+                "Eye Health",
+                "Vision Care",
+                "Community Health",
+                "Eye Camps",
+                "Vision Assessment"
+            ]
+        },
+        {
+            "project_name": "Optometry Student Association",
+            "project_details": "Member of the Optometry Student Association, actively involved in organizational activities and student-led initiatives, contributed to event coordination, peer collaboration, and programs aimed at promoting eye health awareness and professional development within the optometry field.",
+            "keywords": [
+                "Optometry",
+                "Student Association",
+                "Event Coordination",
+                "Peer Collaboration",
+                "Eye Health Awareness"
+            ]
+        }
+    ],
+    "experience": [
+        {
+            "total_experience_years": 2.0,
+            "jobs": [
+                {
+                    "job_title": "Internship trainee",
+                    "company": "Bank of Ceylon",
+                    "duration_months": 24
+                },
+                {
+                    "job_title": "Bank assurance officer",
+                    "company": "Bank of Ceylon",
+                    "duration_months": 24
+                }
+            ]
+        }
+    ],
+    "candidate_num": 2,
+    "name": "GAYANIE KAUSHALYA",
+    "phone": " 0740685294",
+    "email": "gayanipremathilake4@gmail.com",
+    "location": "Nawagashinna, Dambulla"
+}

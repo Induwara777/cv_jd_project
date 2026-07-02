@@ -1,0 +1,101 @@
+{
+    "job_title": "Machine Learning Engineer",
+    "job_state": "mid-level",
+    "job_location": "Sri Lanka",
+    "job_type": "onsite",
+    "education": {
+        "degree_status": "graduate",
+        "required_degrees": [
+            "Bachelor's degree in Computer Science",
+            "Bachelor's degree in Data Science"
+        ],
+        "preferred_degrees": [
+            "related field"
+        ],
+        "certificates": []
+    },
+    "experience": {
+        "min_experience_years": 2
+    },
+    "skills": {
+        "technical_required": [
+            "Python",
+            "Scikit-learn",
+            "TensorFlow",
+            "PyTorch",
+            "SQL",
+            "databases",
+            "APIs (Flask/FastAPI)",
+            "machine learning algorithms",
+            "model lifecycle"
+        ],
+        "technical_preferred": [
+            "Git",
+            "CI/CD pipelines",
+            "Docker",
+            "MLOps",
+            "Kubernetes",
+            "big data tools (Spark/PySpark)",
+            "MLflow",
+            "Kubeflow",
+            "real-time/streaming data systems"
+        ],
+        "soft_required": [
+            "collaboration",
+            "communication",
+            "teamwork",
+            "problem-solving",
+            "adaptability"
+        ]
+    },
+    "responsibilities": [
+        "Develop, test, and deploy machine learning models",
+        "Build and maintain scalable ML pipelines",
+        "Collaborate with data scientists to optimize and productionize models",
+        "Monitor model performance and retrain when necessary",
+        "Work with large datasets and optimize data processing workflows",
+        "Ensure code quality, versioning, and documentation"
+    ],
+    "compensation": {
+        "min_salary": null,
+        "max_salary": null
+    },
+    "keywords": [
+        "Machine Learning Engineer",
+        "ML Engineer",
+        "AI Engineer",
+        "mid-level",
+        "Computer Science",
+        "Data Science",
+        "Python",
+        "Scikit-learn",
+        "TensorFlow",
+        "PyTorch",
+        "SQL",
+        "databases",
+        "APIs",
+        "machine learning algorithms",
+        "model lifecycle",
+        "Git",
+        "CI/CD pipelines",
+        "Docker",
+        "MLOps",
+        "Kubernetes",
+        "big data",
+        "Spark",
+        "PySpark",
+        "MLflow",
+        "Kubeflow",
+        "real-time data",
+        "streaming data",
+        "collaboration",
+        "communication",
+        "teamwork",
+        "problem-solving",
+        "adaptability",
+        "financial industry",
+        "Sri Lanka",
+        "career growth",
+        "career development"
+    ]
+}
