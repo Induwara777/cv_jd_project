@@ -1,61 +1,58 @@
 # Libraries
 import logging
-import os
 import re
-import z_ocr_fun
-import z_personal_data
 import z_text_preprocess
+import json
 
 # Error Handling
 logger = logging.getLogger(__name__)
 
 # Function
-def llm_text(filepath):
-    # file checking
-    if not os.path.isfile(filepath):
-        logger.error("File not found : %s",filepath)
-        return None
+def llm_text(peronal_json,extract_json,output_json):
+    with open(peronal_json,"r",encoding="utf-8") as f:
+        personal_data = json.load(f)
     
-    # OCR Text data
+    with open(extract_json,"r",encoding="utf-8") as f:
+        cv_data = json.load(f)
+    
+    masked_json = {}
+    
     try:
-        extracted_data = z_ocr_fun.extraction(filepath)
-    except Exception as e:
-        logger.exception("Extraction is failed for %s: %s", filepath,e)
-        return None
-    
-    # peronal data extraction
-    try:
-        data_file = z_personal_data.personal_data(filepath)
-    except Exception as e:
-        logger.error("LLM Output is wrong!!!.Check it %s:  %s",filepath,e)
-        data_file = {}
-    
-    values = [v for v in data_file.values() if v]
-    pattern = "|".join(re.escape(v) for v in values)
-    masked = re.sub(pattern, "[MASKED]", extracted_data) if pattern else None
-    
-    # email masked
-    try:
-        masked1 = z_text_preprocess.emails_masked(masked)
-    except Exception as e:
-        logger.exception("Masked data is wrong!!! ",e)
-    masked1 = masked1 if masked1 else None
+        for cv_id,cv_text in cv_data.items():
+            info = personal_data.get(cv_id,{})
+            value = [ str(v).strip() for v in info.values() if v ]
+            pattern = "|".join(re.escape(x) for x in value) if value else None
+            masked = re.sub(pattern, "[MASKED]", cv_text) if pattern else None
+        
+            # email masked
+            try:
+                masked1 = z_text_preprocess.emails_masked(masked)
+            except Exception as e:
+                logger.exception(f"MASKING EMAIL IS FAILED ON CV : {cv_id} :{e} ")
+            masked1 = masked1 if masked1 else None
 
-    # phone number masked
-    try:
-        masked2 = z_text_preprocess.ph_num_masked(masked1)
+            # phone number masked
+            try:
+                masked2 = z_text_preprocess.ph_num_masked(masked1)
+            except Exception as e:
+                logger.exception(f"MASKING PHONE NUMBER IS FAILED ON CV : {cv_id} :{e} ")
+            masked2 = masked2 if masked2 else None
+        
+            # person names masked
+            try:
+                masked3 = z_text_preprocess.person(masked2)
+            except Exception as e:
+                logger.exception(f"MASKING PERONAL DATA IS FAILED ON CV : {cv_id} :{e} ")
+            
+            # final one
+            masked3 = masked3 if masked3 else None
+            masked_json[cv_id] = masked3
+        with open(output_json,"w",encoding="utf-8") as f:
+            json.dump(masked_json,f,indent=2)
     except Exception as e:
-        logger.exception("Masked data is wrong!!! ",e)
-    masked2 = masked2 if masked2 else None
+        logger.exception(f"ENTIRE CV TEXT MASKING PROCESS IS BROKEN! : {e}")
     
-    # person names masked
-    try:
-        masked3 = z_text_preprocess.person(masked2)
-    except Exception as e:
-        logger.exception("Masked data is wrong!!! ",e)
-    
-    # final one
-    masked3 = masked3 if masked3 else None
-    return masked3
-
-print(llm_text("y_Associate Data Scientist Induwara Dilshan.pdf"))
+    return masked_json
+llm_text(peronal_json="personal details\\full_personal_data.json",
+         extract_json="row_ocr_output\\row_ocr_cv_deatils.json",
+         output_json="personal details\\masked_all_text.json")

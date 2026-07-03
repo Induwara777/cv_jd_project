@@ -83,4 +83,4 @@ def personal_data_json(input_json, output_json):
     
     return results
 
-print(personal_data_json("row_ocr_output\\row_ocr_cv_deatils.json","personal details\\full_personal_data.json"))
+# print(personal_data_json("row_ocr_output\\row_ocr_cv_deatils.json","personal details\\full_personal_data.json"))

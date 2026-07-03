@@ -1,16 +1,18 @@
-import z_text_preprocess
-import z_ocr_fun
+import json
+import logging
 import xlsxwriter
 
+logger = logging.getLogger(__name__)
 
-def personal_info(y):
+def personal_info():
     try:
-        row = z_ocr_fun.extraction(y)
-        text_data = z_text_preprocess.llm_text(text=row, y =y)
-        personal_data = z_text_preprocess.preprocess(y)
+        with open("personal details\\full_personal_data.json","r",encoding="utf-8") as f:
+            dataset = json.load(f)
+    except Exception as e:
+        logger.exception(f"PERSONAL DETAILS JSON FILE IS NOT FOUND! {e}")
 
-
-        data_list = [personal_data]
+    try:
+        data_list = [{**info, 'id': id} for id, info in dataset.items()]
 
         OUTPUT_PATH = 'C:\\Users\\User\\Documents\\AI Screening Project\\Code files\\extraction\\personal details\\testing1.xlsx'
 
@@ -26,23 +28,22 @@ def personal_info(y):
 
         for i, record in enumerate(data_list, start=1):
             row = i
-            worksheet.write(row, 0, i, cell_format)
-            worksheet.write(row, 1, record.get('name', '').strip(), cell_format)
+            worksheet.write(row, 0, int(record['id']), cell_format)
+            worksheet.write(row, 1, str(record.get('name', '')).strip(), cell_format)
             worksheet.write(row, 2, str(record.get('phone', '')).strip(), cell_format)
-            worksheet.write(row, 3, record.get('email', '').strip(), cell_format)
-            worksheet.write(row, 4, record.get('location', '').strip(), cell_format)
+            worksheet.write(row, 3, str(record.get('email', '')).strip(), cell_format)
+            worksheet.write(row, 4, str(record.get('location', '')).strip(), cell_format)
 
         worksheet.set_column('A:A', 8)
         worksheet.set_column('B:B', 22)
         worksheet.set_column('C:C', 16)
         worksheet.set_column('D:D', 30)
-        worksheet.set_column('E:E', 18)
+        worksheet.set_column('E:E', 30)
 
         workbook.close()
-        print("Done!!!!")
+        print("DONE!!!!")
 
     except Exception as e:
-        print(e) 
+        logger.exception(f"EXCEL SHEET CREATION IS FAILED! : {e}") 
 
-if __name__ == "__main__":
-    personal_info("y_Associate Data Scientist Induwara Dilshan.pdf")
+personal_info()
