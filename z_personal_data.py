@@ -1,9 +1,8 @@
 # Libraries
 import logging
 import z_text_preprocess
-import z_ocr_fun
-import os
 import re
+import json
 
 # Error Handling
 logger = logging.getLogger(__name__)
@@ -45,21 +44,11 @@ def preprocess(ext_data, llm_per_data):
     
     return result
 
-#Final function
-def personal_data(filepath):
-    if not os.path.isfile(filepath):
-        logger.error("File not found : ",filepath)
-        return None
-    
-    # OCR Text data
-    try:
-        extracted_data = z_ocr_fun.extraction(filepath)
-    
-    except Exception as e:
-        logger.exception("Extraction is failed for ", filepath,e)
+# personal_data_from_text function
+def personal_data_from_text(cv_id,extracted_data):
 
     if not extracted_data or not extracted_data.strip():
-        logger.warning("No text extraction from  ",filepath)
+        logger.warning("No text extraction from  ",cv_id)
         return None
     
     # Name and Location
@@ -68,16 +57,30 @@ def personal_data(filepath):
         name_loc = z_text_preprocess.all(cleaned)
     
     except Exception as e:
-        logger.error("LLM Output is wrong!!!.Check it",filepath,e)
+        logger.error("LLM Output is wrong!!!.Check it",cv_id,e)
         name_loc = {}
 
     return preprocess(extracted_data,name_loc)
 
-print(personal_data("y_Associate Data Scientist Induwara Dilshan.pdf"))
+# Final Function
+def personal_data_json(input_json, output_json):
+    # loading input json
+    with open(input_json,"r",encoding="utf-8") as f:
+        row_ocr_data = json.load(f)
+    
+    results = {}
 
-# Checking part
-# result = personal_data("y_Associate Data Scientist Induwara Dilshan.pdf")
-# if result:
-#     print(result)
-# else:
-#     print("Personal Data Extraction is failed!!!")
+    for i,j in row_ocr_data.items():
+        try:
+            result = personal_data_from_text(i,j)
+            results[i] = result
+        except Exception as e:
+            logger.exception("Failded preprocesing %s: %s",i,e)
+            results[i] = None
+        
+    with open(output_json,"w",encoding="utf-8") as f:
+        json.dump(results,f,indent=4)
+    
+    return results
+
+print(personal_data_json("row_ocr_output\\row_ocr_cv_deatils.json","personal details\\full_personal_data.json"))
