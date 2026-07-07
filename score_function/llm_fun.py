@@ -7,9 +7,12 @@ import os
 from google import genai
 from google.genai import types 
 
-logger = logging.getLogger(__name__)
-os.environ["GEMINI_API_KEY"] = "MASKED"
-client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+try:
+    logger = logging.getLogger(__name__)
+    os.environ["GEMINI_API_KEY"] = "MASKED"
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+except Exception as e:
+    logger.exception(f"THERE IS A PROBLEM IN GEMINI FLASH API KEY {type(e).__name__} - {e}")
 
 def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[BaseModel],retries: int = 5 ):
     prompt = prompt.format(
@@ -32,6 +35,6 @@ def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[Ba
             return parsed.model_dump()
         
         except Exception as e:
-            logging.exception(f"Attempt {attempt + 1} failed: {e}")
+            logging.exception(f"Attempt {attempt + 1} failed: {type(e).__name__} - {e}")
             time.sleep(random.randint(30,40))
     return {"ERROR":"ALL RETRIES WERE FAILED"}
