@@ -16,19 +16,19 @@ def text_save(filepath):
     extracted_data = {}
     try:
         for i,pdf in enumerate(file_names):
-            length = z_ocr_fun.text_len(pdf)
-            if length <= 30:
+            try:
+                text = z_ocr_fun.extraction(pdf)
+            except Exception as e:
+                logger.exception(f"PDF TEXABLE EXTRACTION FUNCTION IS FAILED. {type(e).__name__} - {e}")
+            length = len(text) if len(text) else 0
+            if length <= 50:
                 try:
                     text = z_scanned_ocr.scanned_doc_ocr(pdf)
                 except Exception as e:
-                    logger.exception("Scaned ocr function is failed!!!",e)
-            else:               
-                try:
-                    text = z_ocr_fun.extraction(pdf)
-                except Exception as e:
-                    logger.error("Extraction is Failed!!!",e)
-            text = text if len(text) > 20 else ""
+                    logger.exception("Scaned ocr function is failed!!!",e)          
+            text = text if len(text) > 50 else ""
             extracted_data[i] = text.encode("ascii", "ignore").decode().strip()
     except Exception as e:
         logger.error("CV name list can be empty list !!!",e)
     return extracted_data
+
