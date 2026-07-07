@@ -4,8 +4,8 @@ from openai import OpenAI
 import fitz
 import z_ocr_fun
 import json
-import z_cv_extraction_set
 import z_text_preprocess
+import cv_extractions.z_cv_extraction_set 
 
 # Catching all names in a folder
 def file_name(folder):
@@ -16,7 +16,7 @@ def file_name(folder):
 # Return json file for each CV
 def one_json(y):
     text = z_ocr_fun.extraction(f"{y}.pdf")
-    file = z_cv_extraction_set.collection(text)
+    file = cv_extractions.z_cv_extraction_set.collection(text)
     return file
 
 # Call json files for all CV.
@@ -44,8 +44,3 @@ def json_file(output_folder):
     
 if __name__ == "__main__":
     json_file("file_cvs")
-
-
-
-
-
