@@ -2,7 +2,7 @@ import json
 from openai import OpenAI
 import requests
 import os
-from z_ocr_fun import extraction
+from ocr.z_ocr_fun import extraction
 
 # LLM API KEY
 os.environ['OPENAI_API_KEY'] = "masked"
@@ -17,20 +17,16 @@ def final_CV_details(text):
 
 Extract structured information from the CV text.
 
-Rules for extracting profile details:
-- Return summary of profile in the CV in profile_summary section.
-
 Rules for extracting skills:
 - Return all technical and soft skills in the CV in profile_summary and soft_skills section.
 
 Rules for education:
 - Extract O/L, A/L, degree, and certificate information if available.
-- Set "highest_qualification" to the highest completed qualification (ol, al, diploma, hnd, degree, masters, phd).
+- Set "highest_qualification" to the highest completed qualification (ol, al,degree).
 
 Rules for experiences:
-- Calculate duration_months for each job: (end_year*12 + end_month) - (start_year*12 + start_month).
-- If end_date="Present", use month of today.
-- total_experience_years = sum(all duration_months) / 12, round to 1 decimal
+- Calculate duration_months for each job.
+- total_experience_years = (Adding all duration_months/ 12 )
 
 Rules for project:
 - Return summary of each projects mentioned in the CV in project_details section.
@@ -43,15 +39,6 @@ Common rules for every section:
 
 JSON STRUCTURE:
 {{
-  "candidate_name": "",
-  "candidate_contact": {{
-    "email": "",
-    "phone": "",
-    "location": ""
-  }},
-
-  "profile_summary": "",
-
   "technical_skills": [],
   "soft_skills": [],
 
@@ -76,15 +63,12 @@ JSON STRUCTURE:
           "subject": "",
           "grade": ""
         }}
-      ],
-      "z_score": null
+      ]
     }},
 
     "degrees": [
       {{
-        "degree_name": "",
-        "university": "",
-        "gpa": null
+        "degree_name": ""
       }}
     ],
 
@@ -100,8 +84,7 @@ JSON STRUCTURE:
     "jobs": [
       {{
         "job_title": "",
-        "company": "",
-        "duration": ""
+        "duration_month": ""
       }}
     ]
   }},
