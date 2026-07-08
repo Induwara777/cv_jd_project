@@ -1,7 +1,6 @@
 # Library
 import ollama
 import re
-from z_ocr_fun import extraction
 import json
 import spacy
 
