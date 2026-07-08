@@ -2,7 +2,7 @@ import os
 import re
 from openai import OpenAI
 import fitz
-import z_ocr_fun
+import ocr.z_ocr_fun
 import json
 import z_text_preprocess
 import cv_extractions.z_cv_extraction_set 
@@ -15,7 +15,7 @@ def file_name(folder):
 
 # Return json file for each CV
 def one_json(y):
-    text = z_ocr_fun.extraction(f"{y}.pdf")
+    text = ocr.z_ocr_fun.extraction(f"{y}.pdf")
     file = cv_extractions.z_cv_extraction_set.collection(text)
     return file
 
