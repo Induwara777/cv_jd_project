@@ -14,7 +14,7 @@ def scanned_doc_ocr(filepath):
         doc = fitz.open(filepath)
         for page_num,page in enumerate(doc,start=1):
             try:
-                pix = page.get_pixmap(dpi=200,alpha =False)
+                pix = page.get_pixmap(dpi=150,alpha =False)
                 img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
                     pix.height, pix.width, pix.n
                 )
@@ -35,4 +35,5 @@ def scanned_doc_ocr(filepath):
     final_text = "\n".join(text_output) if len(str(text_output))>50 else ""
     return final_text
 
-print(scanned_doc_ocr("y_bimali.pdf"))
+# print(scanned_doc_ocr("y_bimali.pdf"))
+# 12 s
