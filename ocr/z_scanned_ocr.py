@@ -9,11 +9,12 @@ logger = logging.getLogger(__name__)
 
 def scanned_doc_ocr(filepath):
     text_output = []
+    doc= None
     try:      
         doc = fitz.open(filepath)
         for page_num,page in enumerate(doc,start=1):
             try:
-                pix = page.get_pixmap(dpi=200)
+                pix = page.get_pixmap(dpi=200,alpha =False)
                 img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(
                     pix.height, pix.width, pix.n
                 )
@@ -24,9 +25,14 @@ def scanned_doc_ocr(filepath):
                 result = engine(img)
                 text_output.append(" ".join(result.txts))
             except Exception as e:
-                logger.exception(f"SCANED CV PDF IS FAILED ON PAGE : {page_num}")
-        doc.close()
+                logger.exception(f"SCANED CV PDF IS FAILED ON PAGE : {page_num} \n{type(e).__name__} \nError - {e}")
     except Exception as e:
-        logger.exception("Failed to open or process PDF file",e)
+        logger.exception(f"FAILED TO OPEN OR PROCESS PDF FILES !!! \n{type(e).__name__} \nError - {e}")
+
+    finally:
+        if doc is not None:
+            doc.close()
     final_text = "\n".join(text_output) if len(str(text_output))>50 else ""
     return final_text
+
+print(scanned_doc_ocr("y_bimali.pdf"))
