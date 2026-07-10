@@ -1,24 +1,26 @@
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import os
 import json
 from openai import OpenAI
-import requests
 import logging
+from groq import RateLimitError
 import time
-import random
-
 logger = logging.getLogger(__name__)
 
 # LLM API KEY
 try:
     os.environ['OPENAI_API_KEY'] = "masked"
     client = OpenAI(
-        base_url="https://openrouter.ai/api/v1"
+        base_url="https://api.groq.com/openai/v1"
     )
 except Exception as e:
-    logger.exception(f"THERE IS A PROBLEM IN LLAMA 70B API KEY {type(e).__name__} - {e}")
+    logger.exception(f"THERE IS A PROBLEM IN GPT OSS MODEL API KEY {type(e).__name__} - {e}")
 
 
-# education fun
+import re
+import json
+
 def education(text):
     prompt = f"""You are an expert HR information extraction system.
 
@@ -55,15 +57,12 @@ JSON STRUCTURE:
           "subject": "",
           "grade": ""
         }}
-      ],
-      "z_score": null
+      ]
     }},
 
     "degrees": [
       {{
-        "degree_name": "",
-        "university": "",
-        "gpa": null
+        "degree_name": ""
       }}
     ],
 
@@ -78,27 +77,59 @@ JSON STRUCTURE:
 TEXT:
 {text}
 """
-    response = client.chat.completions.create(
-        model = "meta-llama/llama-3.3-70b-instruct",
-        messages = [{
-            "role":"user",
-            "content" : prompt
-        }],
-        temperature=0.0,
-        max_tokens = 1000,
-        response_format={"type": "json_object"}
-    )
 
-    output = response.choices[0].message.content.strip()
+    data = {}
+    output = ""
 
+    for attempt in range(2):  
+        try:
+            response = client.chat.completions.create(
+                model="openai/gpt-oss-120b",
+                messages=[{
+                    "role": "user",
+                    "content": prompt
+                }],
+                temperature=0.0,
+                max_tokens=2000, 
+                response_format={"type": "json_object"}
+            )
+        except RateLimitError as e:
+            retry = e.response.headers.get("retry-after")
+            logger.warning(f"FUCNTION: RATE LIMITED, retry_after={retry}")
+            if retry:
+                time.sleep(retry)
+                continue
+        except Exception as e:
+            logger.exception(f"EDUCATION FUNCTION API CALL FAILED\n{type(e).__name__} - {e}")
+            time.sleep(6)
+            continue
+
+        choice = response.choices[0]
+        finish_reason = getattr(choice, "finish_reason", None)
+        output = (choice.message.content or "").strip()
+
+        logger.info(f"education() attempt {attempt+1} | finish_reason={finish_reason} | output_len={len(output)}")
+
+        if finish_reason == "content_filter":
+            logger.warning("education(): response blocked by content_filter, retrying...")
+            time.sleep(6)
+            continue
+
+        if output:
+            break 
+
+    if not output:
+        logger.error("EDUCATION FUNCTION FAILED: empty output after retries")
+        return data
+
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", output.strip())
     try:
-        data =  json.loads(output)
+        data = json.loads(cleaned)
     except Exception as e:
-        logger.exception(f"EDUCAION FUNCTION IS FAILED \n{type(e).__name__} - {e}")
+        logger.exception(f"EDUCATION FUNCTION JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
         data = {}
 
     return data
-
 
 
 # skill fun
@@ -122,27 +153,50 @@ JSON STRUCTURE:
 TEXT:
 {text}
 """
-    response = client.chat.completions.create(
-        model = "meta-llama/llama-3.3-70b-instruct",
-        messages = [{
-            "role":"user",
-            "content" : prompt
-        }],
-        temperature=0.0,
-        max_tokens = 1000,
-        response_format={"type": "json_object"}
-    )
+    data = {}
+    output = ""
+    for attempt in range(2):
+            try:
+                response = client.chat.completions.create(
+                    model = "openai/gpt-oss-120b",
+                    messages = [{
+                        "role":"user",
+                        "content" : prompt
+                    }],
+                    temperature=0.0,
+                    max_tokens = 2000,
+                    response_format={"type": "json_object"}
+                )
+            
+            except Exception as e:
+                logger.exception(f"SKILL FUNCTION API CALL FAILED\n{type(e).__name__} - {e}")
+                continue
 
-    output = response.choices[0].message.content.strip()
+            choice = response.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None)
+            output = (choice.message.content or "").strip()
 
+            logger.info(f"skill() attempt {attempt+1} | finish_reason={finish_reason} | output_len={len(output)}")
+
+            if finish_reason == "content_filter":
+                logger.warning("skill(): response blocked by content_filter, retrying...")
+                continue
+
+            if output:
+                break 
+
+            if not output:
+                logger.error("SKILL FUNCTION FAILED: empty output after retries")
+                return data
+
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", output.strip())
     try:
-        data =  json.loads(output)
+        data = json.loads(cleaned)
     except Exception as e:
-        logger.exception(f"SKILLS FUNCTION IS FAILED \n{type(e).__name__} - {e}")
+        logger.exception(f"SKILL FUNCTION JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
         data = {}
 
     return data
-
 
 
 # experience fun
@@ -151,22 +205,33 @@ def experience(text):
 
 Extract structured information from the CV text.
 
-RULES:
-- Return ONLY valid JSON
-- Calculate duration_months for each job: (end_year*12 + end_month) - (start_year*12 + start_month)
-- If end_date="Present", use June 15, 2026 as end_date
-- total_experience_years = sum(all duration_months) / 12, round to 1 decimal
+
+
+CALCULATION RULES (follow exactly, do not explain your steps in the output):
+
+1. DO NOT GUESS for duration_year
+2. Read entire data.
+3. Find all related to experiences.
+4. using your intelligence, give experiences as month counts. IT IS MUST.
+5. Finaly, MUST CALCULATE total_experience_years.
+
+OUTPUT RULES:
+- Return ONLY a single valid JSON object.
+- Do NOT include any text, explanation, notes, or commentary before or after the JSON.
+- Do NOT wrap the JSON in markdown code fences (no ```json).
+- Do NOT add or remove fields from the structure below.
+- Use null for any missing values.
+
 
 JSON STRUCTURE:
 {{
   "experience": [
     {{
-    "total_experience_years": null,
+    "total_experience_years": "",
     "jobs": [
       {{
         "job_title": "",
-        "company": "",
-        "Duration: null
+        "duration_month": null
       }}
     ]
     }}
@@ -176,23 +241,47 @@ JSON STRUCTURE:
 TEXT:
 {text}
 """
-    response = client.chat.completions.create(
-        model = "meta-llama/llama-3.3-70b-instruct",
-        messages = [{
-            "role":"user",
-            "content" : prompt
-        }],
-        temperature=0.0,
-        max_tokens = 1500,
-        response_format={"type": "json_object"}
-    )
+    data = {}
+    output = ""
+    for attempt in range(2):
+            try:
+                response = client.chat.completions.create(
+                    model = "openai/gpt-oss-120b",
+                    messages = [{
+                        "role":"user",
+                        "content" : prompt
+                    }],
+                    temperature=0.0,
+                    max_tokens = 2000,
+                    response_format={"type": "json_object"}
+                )
+            
+            except Exception as e:
+                logger.exception(f"EXPERIENCE FUNCTION API CALL FAILED\n{type(e).__name__} - {e}")
+                continue
 
-    output = response.choices[0].message.content.strip()
-    
+            choice = response.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None)
+            output = (choice.message.content or "").strip()
+
+            logger.info(f"education() attempt {attempt+1} | finish_reason={finish_reason} | output_len={len(output)}")
+
+            if finish_reason == "content_filter":
+                logger.warning("experience(): response blocked by content_filter, retrying...")
+                continue
+
+            if output:
+                break 
+
+            if not output:
+                logger.error("EXPERIENCE FUNCTION FAILED: empty output after retries")
+                return data
+
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", output.strip())
     try:
-        data =  json.loads(output)
+        data = json.loads(cleaned)
     except Exception as e:
-        logger.exception(f"EXPERIENCE FUNCTION IS FAILED \n{type(e).__name__} - {e}")
+        logger.exception(f"EXPERIENCE FUNCTION JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
         data = {}
 
     return data
@@ -226,24 +315,47 @@ JSON STRUCTURE:
 TEXT:
 {text}
 """
-    response = client.chat.completions.create(
-        model = "meta-llama/llama-3.3-70b-instruct",
-        messages = [{
-            "role":"user",
-            "content" : prompt
-        }],
-        temperature=0.0,
-        max_tokens = 800,
-        response_format={"type": "json_object"}
-    )
+    data = {}
+    output = ""
+    for attempt in range(2):
+            try:
+                response = client.chat.completions.create(
+                    model = "openai/gpt-oss-120b",
+                    messages = [{
+                        "role":"user",
+                        "content" : prompt
+                    }],
+                    temperature=0.0,
+                    max_tokens = 2000,
+                    response_format={"type": "json_object"}
+                )
+            
+            except Exception as e:
+                logger.exception(f"PROJECT FUNCTION API CALL FAILED\n{type(e).__name__} - {e}")
+                continue
 
-    output = response.choices[0].message.content.strip()
+            choice = response.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None)
+            output = (choice.message.content or "").strip()
 
+            logger.info(f"project() attempt {attempt+1} | finish_reason={finish_reason} | output_len={len(output)}")
+
+            if finish_reason == "content_filter":
+                logger.warning("project(): response blocked by content_filter, retrying...")
+                continue
+
+            if output:
+                break 
+
+            if not output:
+                logger.error("PROJECT FUNCTION FAILED: empty output after retries")
+                return data
+
+    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", output.strip())
     try:
-        data =  json.loads(output)
+        data = json.loads(cleaned)
     except Exception as e:
-        logger.exception(f"PROJECT FUNCTION IS FAILED \n{type(e).__name__} - {e}")
+        logger.exception(f"PROJECT FUNCTION JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
         data = {}
 
     return data
-    
