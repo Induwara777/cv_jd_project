@@ -118,7 +118,7 @@ TEXT:
                 "content" : prompt
             }],
             temperature=0.0,
-            max_tokens = 2000,
+            max_tokens = 2500,
             response_format={"type": "json_object"}
         )
 
@@ -134,7 +134,18 @@ TEXT:
           if status_code == 400:
             logger.exception(f"LLM DON'T PROVIDE VALID JSON. PLEASE INCREASE MAX_TOKEN_SIZE !!!. \n{type(e).__name__} \nERROR- {e}")
             break
-
+          elif status_code == 401:
+             logger.exception(f"LLM API KEY IS INVALID OR MISSING API KEY! \n{type(e).__name__} \nERROR- {e}")
+             break
+          elif status_code == 403:
+             logger.exception(f"ACESS OF LLM API KEY IS DENIED! \n{type(e).__name__} \nERROR- {e}")
+             break
+          elif status_code == 404:
+             logger.exception(f"LLM API NAME IS WRONG! \n{type(e).__name__} \nERROR- {e}")
+             break  
+          elif status_code == 413:
+             logger.exception(f"YOUR PROMPT EXCEEDED SIZE LIMIT. REDUCE IT. \n{type(e).__name__} \nERROR- {e}")
+             break
           else:
             logger.exception(f"LLM FUNCTION API CALL FAILED\n{type(e).__name__} \nERROR- {e}")
             time.sleep(4)

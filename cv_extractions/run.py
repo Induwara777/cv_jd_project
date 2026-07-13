@@ -8,7 +8,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-def process_masked_texts(masked_texts: dict,save_path = "cv_extractions\\DATA_FILE.json") -> dict:
+def process_masked_texts(masked_texts: dict) -> dict:
     results = {}
     total = len(masked_texts)
  
@@ -36,8 +36,8 @@ def process_masked_texts(masked_texts: dict,save_path = "cv_extractions\\DATA_FI
             waiting = float(15) - float(elapsed)
             if waiting > 0:
                 time.sleep(waiting)
-        with open(f"{save_path}.json", "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=2, ensure_ascii=False)
+        with open(f"cv_extractions\\{idx}.json", "w", encoding="utf-8") as f:
+            json.dump(results[idx], f, indent=2, ensure_ascii=False)
 
     success_count = sum(1 for r in results.values() if r)
     logger.info(f"BATCH COMPLETED : {success_count}/{total} SUCCEEDED !")
