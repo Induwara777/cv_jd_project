@@ -1,29 +1,48 @@
 # Library
 import ollama
+import time
 import re
 import json
 import spacy
+import logging
+logger = logging.getLogger(__name__)
 
 
 # Regex Function
 # Email extraction
 def emails(text):
-    email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+    try:
+        email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+    except Exception as e:
+        logger.exception(f"{type(e).__name__} \nERROR - {e}")
+        text = ""
     return re.findall(email,text)
 
 # Email Masked
 def emails_masked(text):
-    email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+    try:
+        email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+    except Exception as e:
+        logger.exception(f"{type(e).__name__} \nERROR - {e}")
+        text = ""
     return re.sub(email,"[MASKED]",text)
 
 # Phone number extraction
 def ph_num(text):
-    phone = r'(?:\+?94|0)?\s*\d[\d\s\-]{7,}\d'
+    try:
+        phone = r'(?:\+?94|0)?\s*\d[\d\s\-]{7,}\d'
+    except Exception as e:
+        logger.exception(f"{type(e).__name__} \nERROR - {e}")
+        text = ""
     return re.findall(phone,text)
 
 # Phone number Masked
 def ph_num_masked(text):
-    phone = r'(?:\+?94|0)?\s*\d[\d\s\-]{7,}\d'
+    try:
+        phone = r'(?:\+?94|0)?\s*\d[\d\s\-]{7,}\d'
+    except Exception as e:
+        logger.exception(f"{type(e).__name__} \nERROR - {e}")
+        text = ""
     return re.sub(phone,"[MASKED]",text)
 
 
@@ -53,27 +72,34 @@ OUTPUT JSON FILE:
 
 CV TEXT:
 {text}"""
+    for attemp in range(3):
+        try:        
+            response = ollama.chat(
+                model="qwen2.5:3b",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},  
+                ],
+                options={
+                    "temperature": 0,
+                    "num_predict":50
+                }
+            )
+            output = response["message"]["content"].strip()
+            data = json.loads(output) if output else {"name":"NO","loc":"No"}
+            if len(list(data.values())[0]) > 4 and len(list(data.values())[1]) > 4:
+                dataset = data
+                break
+            else:
+                continue
+        except Exception as e:
+            status_code = getattr(e,"status_code",None)
+            logger.exception(f"STATUS CODE :{status_code} \n{type(e).__name__} \nError - {e}")
+            dataset = {}
+            time.sleep(2)
+            continue
 
-    response = ollama.chat(
-        model="qwen2.5:3b",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},  
-        ],
-        options={
-            "temperature": 0,
-            "num_predict":50
-        }
-    )
-    output = response["message"]["content"].strip()
-
-    try:
-        data = json.loads(output)
-
-    except:
-        print("Error")
-
-    return data
+    return dataset
 
 # load nlp library
 nlp = spacy.load("en_core_web_sm")
@@ -86,41 +112,3 @@ def person(text):
         text = text[:ent.start_char] + "[MASKED]" + text[ent.end_char:]
 
     return text
-
-#name extrcation
-# def all_fn(x):
-#     text = re.sub('\n'," ",extraction(f"{x}").strip()[:1000])
-#     name = all(text)
-#     return name
-
-
-# # Final personal dataset
-# def preprocess(y):
-#     text = extraction(f"{y}")[:1000].strip()
-#     name = all_fn(f"{y}")
-
-#     data = {
-#         "name":list(name.values())[0],
-#         "phone": ph_num(text)[0],
-#         "email":emails(text)[0],
-#         "location":list(name.values())[1]
-#     }
-#     return data
-
-
-# # Final llm text output
-# def llm_text(text,y):
-#     pattern = "|".join(map(re.escape, list(preprocess(y).values())))
-#     masked = re.sub(pattern, "[MASKED]", text)
-#     masked1 = emails_masked(masked)
-#     masked2 = ph_num_masked(masked1)
-#     masked3 = person(masked2)
-#     return masked3
-
-# # Run script
-# if __name__ == "__main__":
-#     text_data = extraction("y_Associate Data Scientist Induwara Dilshan.pdf")
-#     final_data = llm_text(text=text_data,y="y_Associate Data Scientist Induwara Dilshan.pdf")
-#     # personal_data = preprocess("y_Associate Data Scientist Induwara Dilshan.pdf")
-#     print(final_data.strip())
-#     # print(personal_data)
