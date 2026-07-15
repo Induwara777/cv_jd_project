@@ -5,7 +5,9 @@ from score_function import json_files
 from score_function import json_preprocessing
 from score_function import llm_fun
 from score_function import prompt
+from score_function import prompt2
 from score_function import pydentic_validation
+from score_function import pydentic_val
 from score_function import db
 
 import logging
@@ -39,15 +41,18 @@ def cv_score(job_pth,cv_pth):
         return score
     
     try :
-        edu_soft = llm_fun.main_fun(prompt=prompt.EDU_SOFT_IMPACT_PROMPT_TEMPLATE,
+        full = llm_fun.main_fun(prompt=prompt2.FULL_PROMPT,
                                     jd_json=data["jd_selected_data"], 
                                     cv_json=data["cv_selected_data"],
-                                    validation_method=pydentic_validation.fullScore)
-        if edu_soft == None:
+                                    validation_method=pydentic_val.FULLSCORE)
+        if full == None:
             logger.info("DETAILS OF EDU_SOFT IS NONE !!! ")
             raise RuntimeError ("EDUCATION/SOFT SCORING FAILED AFTER ALL RETRIES")
-        score["Education_score"] = list(edu_soft.values())[0]
-        score["Soft_score"] = list(edu_soft.values())[1]
+        score["Education_score"] = list(full.values())[0]
+        score["Soft_score"] = list(full.values())[1]
+        score["Education_score"] = list(full.values())[0]
+        score["Soft_score"] = list(full.values())[1]
+        score["Education_score"] = list(full.values())[0]
         print("part 1 done. wait 15 second")
         time.sleep(15)
     
@@ -56,27 +61,6 @@ def cv_score(job_pth,cv_pth):
     except Exception as e:
         logger.error(f"THERE IS A PROBLEM IN EDUCATION AND SOFT SCORE FUNCTION {type(e).__name__}")
 
-    try :
-        tech_impact = llm_fun.main_fun(prompt=prompt.EXP_TECH_IMPACT_PROMPT_TEMPLATE,
-                                    jd_json=data["jd_selected_data_2"], 
-                                    cv_json=data["cv_selected_data_2"],
-                                    validation_method=pydentic_validation.skillScore)
-        if tech_impact == None:
-            logger.info("DETAILS OF TECH_IMPACT IS NONE !!! ")
-            raise RuntimeError ("TECH/IMPACT SCORING FAILED AFTER ALL RETRIES") 
-        
-        score["Technical_score"] = list(tech_impact.values())[0]
-        score["Impact_score"] = list(tech_impact.values())[1]
-        print("part 2 done. wait 15 second")
-        time.sleep(15)
-    
-    except llm_fun.LLMFatalError:
-        raise
-    except Exception as e:
-        logger.error(f"THERE IS A PROBLEM IN TECH AND IMPACT SCORE FUNCTION {type(e).__name__}")
-        print("error wait 50 second")
-        time.sleep(50)
-    exp_tech = None
     try :
         exp_tech = llm_fun.main_fun(prompt=prompt.EXP_TEMPLATE,
                                     jd_json=data["jd_selected_data_3"], 
@@ -176,18 +160,3 @@ def run_batch(job_path,cv_folder):
 data = run_batch(job_path="jobpost_details_strongprompt.json",cv_folder="cv_extractions")
 print(data)
 # db.database(data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -4,8 +4,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from score_function import json_files
 from score_function import json_preprocessing
 from score_function import llm_fun
-from score_function import prompt
-from score_function import pydentic_validation
+from score_function import prompt2CL
+from score_function import pydentic_val
 from score_function import db
 
 import logging
@@ -37,70 +37,54 @@ def cv_score(job_pth,cv_pth):
     except Exception as e:
         logger.error(f"FAILED TO PREPARE JSON DATA FOR {cv_pth}: {type(e).__name__}")
         return score
-    
-    try :
-        edu_soft = llm_fun.main_fun(prompt=prompt.EDU_SOFT_IMPACT_PROMPT_TEMPLATE,
-                                    jd_json=data["jd_selected_data"], 
-                                    cv_json=data["cv_selected_data"],
-                                    validation_method=pydentic_validation.fullScore)
-        if edu_soft == None:
-            logger.info("DETAILS OF EDU_SOFT IS NONE !!! ")
-            raise RuntimeError ("EDUCATION/SOFT SCORING FAILED AFTER ALL RETRIES")
-        score["Education_score"] = list(edu_soft.values())[0]
-        score["Soft_score"] = list(edu_soft.values())[1]
-        print("part 1 done. wait 15 second")
-        time.sleep(15)
-    
-    except llm_fun.LLMFatalError:
-        raise
-    except Exception as e:
-        logger.error(f"THERE IS A PROBLEM IN EDUCATION AND SOFT SCORE FUNCTION {type(e).__name__}")
 
-    try :
-        tech_impact = llm_fun.main_fun(prompt=prompt.EXP_TECH_IMPACT_PROMPT_TEMPLATE,
-                                    jd_json=data["jd_selected_data_2"], 
-                                    cv_json=data["cv_selected_data_2"],
-                                    validation_method=pydentic_validation.skillScore)
-        if tech_impact == None:
-            logger.info("DETAILS OF TECH_IMPACT IS NONE !!! ")
-            raise RuntimeError ("TECH/IMPACT SCORING FAILED AFTER ALL RETRIES") 
-        
-        score["Technical_score"] = list(tech_impact.values())[0]
-        score["Impact_score"] = list(tech_impact.values())[1]
-        print("part 2 done. wait 15 second")
-        time.sleep(15)
-    
-    except llm_fun.LLMFatalError:
-        raise
-    except Exception as e:
-        logger.error(f"THERE IS A PROBLEM IN TECH AND IMPACT SCORE FUNCTION {type(e).__name__}")
-        print("error wait 50 second")
-        time.sleep(50)
-    exp_tech = None
-    try :
-        exp_tech = llm_fun.main_fun(prompt=prompt.EXP_TEMPLATE,
-                                    jd_json=data["jd_selected_data_3"], 
-                                    cv_json=data["cv_selected_data_3"],
-                                    validation_method=pydentic_validation.ExpScore)
-        print("part 3 is done")
-        if exp_tech == None:
-            logger.info("DETAILS OF EXP_TECH IS NONE !!! ")
-            raise RuntimeError ("EXP_TECH SCORING FAILED AFTER ALL RETRIES") 
-    except llm_fun.LLMFatalError:
-        raise
+    # NOTE: the old 3-call version sent different JD/CV slices to different
+    # prompts (jd_selected_data, jd_selected_data_2, jd_selected_data_3).
+    # Since this is now ONE call covering all 5 sections, we merge those
+    # slices into a single dict so the model has everything it needs.
+    # If any keys collide across slices, the later dict wins — check this
+    # against your actual prepare_json_data() output and adjust if needed.
+    jd_full = {**data.get("jd_selected_data", {}),
+               **data.get("jd_selected_data_2", {}),
+               **data.get("jd_selected_data_3", {})}
+    cv_full = {**data.get("cv_selected_data", {}),
+               **data.get("cv_selected_data_2", {}),
+               **data.get("cv_selected_data_3", {})}
 
+    full = None
+    try:
+        full = llm_fun.main_fun(prompt=prompt2CL.FULL_PROMPT,
+                                    jd_json=jd_full,
+                                    cv_json=cv_full,
+                                    validation_method=pydentic_val.FULLSCORE)
+        if full is None:
+            logger.info("DETAILS OF FULL SCORE IS NONE !!! ")
+            raise RuntimeError("FULL SCORING FAILED AFTER ALL RETRIES")
+
+        logger.info(f"[DEBUG] FULLSCORE KEYS RETURNED: {list(full.keys())}")
+
+        score["Education_score"] = full.get("education_score", "")
+        score["Soft_score"] = full.get("soft_skill_score", "")
+        score["Technical_score"] = full.get("technical_score", "")
+        score["Impact_score"] = full.get("impact_score", "")
+        for _field in ("education_score","soft_skill_score","technical_score","impact_score"):
+            if _field not in full:
+                logger.warning(f"[SCHEMA MISMATCH] KEY '{_field}' NOT FOUND IN FULLSCORE OUTPUT — CHECK FIELD NAMES")
+        print("scoring done in ONE call. wait 15 second")
+        time.sleep(15)
+
+    except llm_fun.LLMFatalError:
+        raise
     except Exception as e:
-        logger.error(f"THERE IS A PROBLEM IN EXPERIENCE (TECHNICAL) SCORE FUNCTION {type(e).__name__}") 
-        print("error,wait 50 second")
-        time.sleep(50)
+        logger.error(f"THERE IS A PROBLEM IN FULL SCORE FUNCTION {type(e).__name__}")
 
     try:
         exp_year = json_preprocessing.score_experience_years(cv_exp=data["cv_ep"],needed_exp=data["need_ep"])
-        if exp_tech == None:
-            raise RuntimeError ("CANNOT COMPUTE EXPERIENCE_SCORE — EXP_TECH IS MISSING") 
-        score["Experience_score"] = float(list(exp_tech.values())[0]) + exp_year
+        if full is None:
+            raise RuntimeError("CANNOT COMPUTE EXPERIENCE_SCORE — FULL SCORE IS MISSING")
+        score["Experience_score"] = float(full["experience_score"]) + exp_year
     except Exception as e:
-        logger.error(f"THERE IS A PROBLEM IN EXPERIENCE (YEAR) OR EXPERIENCE (TECHNICAL) SCORE FUNCTION {type(e).__name__}")
+        logger.error(f"THERE IS A PROBLEM IN EXPERIENCE (YEAR) OR EXPERIENCE (LLM) SCORE FUNCTION {type(e).__name__}")
 
     return score
 
@@ -176,18 +160,3 @@ def run_batch(job_path,cv_folder):
 data = run_batch(job_path="jobpost_details_strongprompt.json",cv_folder="cv_extractions")
 print(data)
 # db.database(data)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
