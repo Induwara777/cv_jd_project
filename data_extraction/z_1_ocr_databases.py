@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 def text_save(filepath):
     try:
-        file_names = z_cv_json_creation.file_name(filepath)
+        file_names = ocr.z_ocr_fun.file_name(filepath)
     except Exception as e:
         logger.error(f"CV NAMES LOADING IS FAILD.!!! PLEASE CHECK CV LOCATION. \n{type(e).__name__}  \nError - {e}")
         file_names = []
@@ -36,4 +36,6 @@ def text_save(filepath):
             extracted_data[i] = text.encode("ascii", "ignore").decode().strip() if len(text) > 50 else ""
     except Exception as e:
         logger.error(f"CV NAME LIST CAN'T BE EMPTY !!! \n{type(e).__name__} \nError - {e}")
+        extracted_data = {}
     return extracted_data
+
