@@ -30,6 +30,7 @@ Rules for extracting skills:
 Rules for project:
 - Return summary of each projects mentioned in the CV in project_details section.
 - Must Return technical or related keywords mentioned in the CV in keywords section.
+- Add experience details to project section.
 
 Rules for experiences:
 CALCULATION RULES (follow exactly, do not explain your steps in the output):
@@ -37,6 +38,7 @@ CALCULATION RULES (follow exactly, do not explain your steps in the output):
 - Read entire data.
 - Find all related to experiences.
 - using your intelligence, give experiences as month counts. IT IS MUST.
+- For every job, MUST CALCULATE duration_month. IT IS ALSO MUST.
 - Finaly, MUST CALCULATE total_experience_years.
 
 Rules for education:
@@ -124,9 +126,9 @@ TEXT:
 
       except RateLimitError as e:
           retry = e.response.headers.get("retry-after")
-          logger.warning(f"LLM: RATE LIMITED, retry_after={retry}")
+          logger.warning(f"LLM: RATE LIMITED, RETRY_AFTER={retry}")
           if retry:
-              time.sleep(float(retry))
+              time.sleep(float(retry)+60)
               continue        
   
       except Exception as e:
@@ -159,7 +161,7 @@ TEXT:
       logger.info(f"OUTPUT_TOKEN={completion_tokens}")
 
       if finish_reason == "content_filter":
-          logger.warning("project(): response blocked by content_filter, retrying...")
+          logger.warning("FUNCTION: response blocked by content_filter, retrying...")
           continue
 
       if output:

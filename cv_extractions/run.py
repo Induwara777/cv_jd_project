@@ -32,8 +32,8 @@ def process_masked_texts(masked_texts: dict) -> dict:
              logger.info(f"JSON FILE FOR CV NUMBER {idx} IS FAILED!")
         end = time.monotonic()
         elapsed = end - start
-        if elapsed < 15:
-            waiting = float(15) - float(elapsed)
+        if elapsed < 20:
+            waiting = float(20) - float(elapsed)
             if waiting > 0:
                 time.sleep(waiting)
         with open(f"cv_extractions\\{idx}.json", "w", encoding="utf-8") as f:
@@ -42,7 +42,7 @@ def process_masked_texts(masked_texts: dict) -> dict:
     success_count = sum(1 for r in results.values() if r)
     logger.info(f"BATCH COMPLETED : {success_count}/{total} SUCCEEDED !")
 
-# Run 
+
 with open("personal details\\masked_all_text.json" , "r", encoding="utf-8") as f:
     dataset = json.load(f)
 process_masked_texts(masked_texts=dataset)

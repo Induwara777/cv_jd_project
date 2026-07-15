@@ -1,0 +1,90 @@
+{
+  "technical_skills": [
+    "C#",
+    "Unity",
+    "Statistical Math",
+    "Game Development",
+    "Artificial Intelligence",
+    "Algorithm Design",
+    "Performance Optimization",
+    "Code Review",
+    "Game Engine Development",
+    "Mobile Development",
+    "2D Puzzle Development",
+    "Casino Game Engine",
+    "Project Management"
+  ],
+  "soft_skills": [
+    "Leadership",
+    "Team Management",
+    "Mentoring",
+    "Communication",
+    "Collaboration",
+    "Problem Solving"
+  ],
+  "projects": [
+    {
+      "project_name": "Open Source Casino Game Engine",
+      "project_details": "Contributed to the development of an open-source casino game engine designed to enhance game performance and scalability.",
+      "keywords": [
+        "casino",
+        "game engine",
+        "performance",
+        "scalability",
+        "C#",
+        "Unity",
+        "open-source"
+      ]
+    },
+    {
+      "project_name": "2D Puzzle Mobile Game",
+      "project_details": "Led the coding and debugging of a 2D puzzle mobile game that improved cognitive functions for users.",
+      "keywords": [
+        "2D puzzle",
+        "mobile",
+        "cognitive functions",
+        "C#",
+        "Unity",
+        "game development"
+      ]
+    }
+  ],
+  "experience": {
+    "total_experience_years": 7.17,
+    "jobs": [
+      {
+        "job_title": "Lead Game Developer at GameTech Studios",
+        "duration_month": "86"
+      },
+      {
+        "job_title": "Senior Unity Developer at Creative Interactive",
+        "duration_month": null
+      },
+      {
+        "job_title": "Game Programmer at Digital Realms",
+        "duration_month": null
+      }
+    ]
+  },
+  "education": {
+    "highest_qualification": "MSc",
+    "ol": {
+      "year": null,
+      "subjects": []
+    },
+    "al": {
+      "year": null,
+      "stream": null,
+      "subjects": []
+    },
+    "degrees": [
+      {
+        "degree_name": "BSc in Computer Science"
+      },
+      {
+        "degree_name": "MSc in Advanced Computer Science"
+      }
+    ],
+    "certificates": []
+  }
+}

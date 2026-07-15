@@ -55,8 +55,8 @@ def extract_all_cvs(cv_dict: dict, save_path: str = "GPT_TEST") -> dict:
     logger.info(f"Done. Processed {total} CVs.")
     return results
 
-with open("personal details\masked_all_text.json","r",encoding="utf-8") as f:
-    data = json.load(f)
+# with open("personal details\masked_all_text.json","r",encoding="utf-8") as f:
+#     data = json.load(f)
 
-details = extract_all_cvs(data)
-print(details)
+# details = extract_all_cvs(data)
+# print(details)
