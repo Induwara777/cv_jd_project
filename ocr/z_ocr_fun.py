@@ -15,6 +15,6 @@ def extraction(path):
 
 # Catching all names in a folder
 def file_name(folder):
-    names = [f for f in os.listdir(folder) if f.endswith(".pdf") ]
+    names = [os.path.join(folder,f) for f in os.listdir(folder) if f.endswith(".pdf") ]
     return names
  
