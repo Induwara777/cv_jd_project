@@ -6,7 +6,6 @@ import random
 import os
 from google import genai
 from google.genai import types,errors
-import threading
 
 
 
@@ -79,7 +78,7 @@ class LLMRetriesExhaustedError(Exception):
  
 
 # LLM function
-def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[BaseModel],retries: int = 2 )-> dict | None:
+def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[BaseModel],retries: int = 3 )-> dict | None:
     prompt = prompt.format(
         jd_json=json.dumps(jd_json, indent=4),
         cv_json=json.dumps(cv_json, indent=4)
@@ -102,7 +101,7 @@ def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[Ba
                 ),
             )
             parsed = response.parsed
-            print("llm reponse are done")
+            print("LLM RESPOSNE IS SUCCESSFULLY PASSED")
             return parsed.model_dump()
             
         
@@ -112,14 +111,14 @@ def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[Ba
             stat_code = getattr(e,"code",None)
 
             if stat_code == 429:
-                print("ERROR 429")
+                print("ERROR CODE: 429")
                 msg = str(e)
                 if "PerDay" in msg or "generate_content_free_tier_requests" in msg:
                     logger.info(f"DAILY QUOTA EXHAUSTED (SERVER-CONFIRMED) — STOPPING BATCH")                  
                     raise LLMFatalError("DAILY QUOTA EXHASTED") from e
-                print("60 secodn waiting adn continoue")
+                print("WAITNG 60 SECOND")
                 wait = time.sleep(60)
-                logger.info(f"RATE LIMIT HIT (ATTEMPT {attempt+1}/{retries}). WAITING {wait:.1f}s: {e}")
+                logger.info(f"RATE LIMIT HIT (ATTEMPT {attempt+1}/{retries}).")
                 time.sleep(wait)
                 continue
             
@@ -131,7 +130,6 @@ def main_fun(prompt:str,jd_json: dict, cv_json: dict, validation_method: type[Ba
                 logger.error(f"SERVER-SIDE ERROR (ATTEMPT {attempt + 1}/{retries})")
                 time.sleep(60)
                 continue 
-
 
             else:
                 logger.error(f"UNHANDLED API ERROR: {type(e).__name__}")

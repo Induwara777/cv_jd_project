@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 DB_USER = "root"
-  
+DB_PASS = "masked"
 DB_HOST = "localhost"
 DB_NAME = "cv_score"
 
@@ -37,9 +37,115 @@ def LoadToDB(score:dict):
     with engine.begin() as conn:
         conn.execute(query,cleaned)
 
-def database(score_detail:list[dict]):
-    for score in score_detail:
-        try:
-            LoadToDB(score)
-        except Exception as e:
-            logger.exception(f"DB WRITE FAILED for {score.get('cv_file')}: \n{type(e).__name__} \nError - {e}")
+def getting_details_from_db():
+    query = text("""
+                 SELECT Index_No, cv_files, full_score FROM scores
+                 ORDER BY full_score DESC;
+                 """)
+    with engine.connect() as conn:
+        rows = conn.execute(query).fetchall()
+
+    leaderboard = []
+
+    for rank, row in enumerate(rows, start=1):
+
+        row = dict(row._mapping)
+
+        leaderboard.append({
+            "id": row["Index_No"],
+            "rank": rank,
+            "cv_file": row["cv_files"],
+            "score": row["full_score"]
+        })
+
+    return leaderboard
+
+def get_candidate_details(candidate_id):
+
+    query = text("""
+        SELECT
+            Index_No,
+            cv_files,
+            Education_score,
+            Technical_score,
+            Soft_score,
+            Experience_score,
+            Impact_score,
+            full_score,
+            validation_status
+        FROM scores
+        WHERE Index_No = :id;
+    """)
+
+    with engine.connect() as conn:
+
+        row = conn.execute(query, {"id": candidate_id}).first()
+
+    if row is None:
+        return None
+
+    row = dict(row._mapping)
+
+    return {
+        "id": row["Index_No"],
+        "cv_file": row["cv_files"],
+
+        "scores": {
+            "education": row["Education_score"],
+            "technical": row["Technical_score"],
+            "soft": row["Soft_score"],
+            "experience": row["Experience_score"],
+            "impact": row["Impact_score"],
+            "full": row["full_score"]
+        },
+
+        "validation_status": row["validation_status"]
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def database(score_detail:list[dict]):
+#     for score in score_detail:
+#         try:
+#             LoadToDB(score)
+#         except Exception as e:
+#             logger.exception(f"DB WRITE FAILED for {score.get('cv_file')}: \n{type(e).__name__} \nError - {e}")

@@ -37,13 +37,7 @@ def cv_score(job_pth,cv_pth):
     except Exception as e:
         logger.error(f"FAILED TO PREPARE JSON DATA FOR {cv_pth}: {type(e).__name__}")
         return score
-
-    # NOTE: the old 3-call version sent different JD/CV slices to different
-    # prompts (jd_selected_data, jd_selected_data_2, jd_selected_data_3).
-    # Since this is now ONE call covering all 5 sections, we merge those
-    # slices into a single dict so the model has everything it needs.
-    # If any keys collide across slices, the later dict wins — check this
-    # against your actual prepare_json_data() output and adjust if needed.
+    
     jd_full = {**data.get("jd_selected_data", {}),
                **data.get("jd_selected_data_2", {}),
                **data.get("jd_selected_data_3", {})}
@@ -57,6 +51,7 @@ def cv_score(job_pth,cv_pth):
                                     jd_json=jd_full,
                                     cv_json=cv_full,
                                     validation_method=pydentic_val.FULLSCORE)
+        
         if full is None:
             logger.info("DETAILS OF FULL SCORE IS NONE !!! ")
             raise RuntimeError("FULL SCORING FAILED AFTER ALL RETRIES")
@@ -71,7 +66,6 @@ def cv_score(job_pth,cv_pth):
             if _field not in full:
                 logger.warning(f"[SCHEMA MISMATCH] KEY '{_field}' NOT FOUND IN FULLSCORE OUTPUT — CHECK FIELD NAMES")
         print("scoring done in ONE call. wait 15 second")
-        time.sleep(15)
 
     except llm_fun.LLMFatalError:
         raise
