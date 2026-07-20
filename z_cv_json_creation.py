@@ -9,7 +9,7 @@ import cv_extractions.z_cv_extraction_set
 
 # Catching all names in a folder
 def file_name(folder):
-    names = [f for f in os.listdir(folder) if f.endswith(".pdf") ]
+    names = [os.path.join(folder,f) for f in os.listdir(folder) if f.endswith(".pdf") ]
     return names
 
 
@@ -41,6 +41,3 @@ def json_file(output_folder):
                 json.dump(llm_json,f,indent = 4)
     except Exception as e:
         print(f"Error : {e}")
-    
-if __name__ == "__main__":
-    json_file("file_cvs")
