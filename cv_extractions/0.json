@@ -3,71 +3,95 @@
     "C#",
     "Unity",
     "Statistical Math",
-    "Game Development",
+    "Project Management",
+    "Algorithms",
     "Artificial Intelligence",
-    "Algorithm Design",
-    "Performance Optimization",
-    "Code Review",
-    "Game Engine Development",
-    "Mobile Development",
-    "2D Puzzle Development",
-    "Casino Game Engine",
-    "Project Management"
+    "Game Development",
+    "Game Programming",
+    "Performance Optimization"
   ],
   "soft_skills": [
     "Leadership",
     "Team Management",
-    "Mentoring",
-    "Communication",
+    "Mentorship",
     "Collaboration",
-    "Problem Solving"
+    "Communication",
+    "Problem Solving",
+    "Adaptability"
   ],
   "projects": [
     {
-      "project_name": "Open Source Casino Game Engine",
-      "project_details": "Contributed to the development of an open-source casino game engine designed to enhance game performance and scalability.",
+      "project_name": "Hit Casino Game",
+      "project_details": "Led the development of a hit casino game at GameTech Studios, managing the project from concept to launch and generating over $2million in the first six months.",
       "keywords": [
-        "casino",
-        "game engine",
-        "performance",
-        "scalability",
         "C#",
         "Unity",
-        "open-source"
+        "Casino",
+        "Game Development",
+        "Project Management"
+      ]
+    },
+    {
+      "project_name": "Company-wide Hackathon Feature Development",
+      "project_details": "Organized and led a company-wide hackathon that produced two patentpending features for the gaming platform.",
+      "keywords": [
+        "Innovation",
+        "Prototyping",
+        "C#",
+        "Unity"
+      ]
+    },
+    {
+      "project_name": "Open Source Casino Game Engine",
+      "project_details": "Contributed code and enhancements to an opensource casino game engine aimed at improving performance and scalability.",
+      "keywords": [
+        "C#",
+        "Unity",
+        "Opensource",
+        "Game Engine",
+        "Scalability"
       ]
     },
     {
       "project_name": "2D Puzzle Mobile Game",
-      "project_details": "Led the coding and debugging of a 2D puzzle mobile game that improved cognitive functions for users.",
+      "project_details": "Led coding and debugging of a 2D puzzle mobile game that enhanced cognitive functions for users.",
       "keywords": [
-        "2D puzzle",
-        "mobile",
-        "cognitive functions",
         "C#",
         "Unity",
-        "game development"
+        "Mobile Development",
+        "Puzzle Game"
+      ]
+    },
+    {
+      "project_name": "Advanced AI System for Strategic Gameplay",
+      "project_details": "Developed an advanced AI system that increased game complexity and user engagement by 25%.",
+      "keywords": [
+        "Artificial Intelligence",
+        "C#",
+        "Unity",
+        "Game AI"
       ]
     }
   ],
   "experience": {
-    "total_experience_years": 7.17,
+    "total_experience_years": 7.2,
     "jobs": [
       {
-        "job_title": "Lead Game Developer at GameTech Studios",
-        "duration_month": "86"
+        "job_title": "Lead Game Developer",
+        "duration_month": 86
       },
       {
-        "job_title": "Senior Unity Developer at Creative Interactive",
+        "job_title": "Senior Unity Developer",
         "duration_month": null
       },
       {
-        "job_title": "Game Programmer at Digital Realms",
+        "job_title": "Game Programmer",
         "duration_month": null
       }
     ]
   },
   "education": {
-    "highest_qualification": "MSc",
+    "highest_qualification": "masters",
     "ol": {
       "year": null,
       "subjects": []

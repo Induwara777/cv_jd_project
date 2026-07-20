@@ -8,9 +8,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-def process_masked_texts(masked_texts: dict) -> dict:
+def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
     results = {}
     total = len(masked_texts)
+    os.makedirs(output_dir, exist_ok=True)
  
     for idx, text in masked_texts.items():
         flag = True
@@ -36,13 +37,29 @@ def process_masked_texts(masked_texts: dict) -> dict:
             waiting = float(20) - float(elapsed)
             if waiting > 0:
                 time.sleep(waiting)
-        with open(f"cv_extractions\\{idx}.json", "w", encoding="utf-8") as f:
+        with open(os.path.join(output_dir, f"{idx}.json"), "w", encoding="utf-8") as f:
             json.dump(results[idx], f, indent=2, ensure_ascii=False)
 
     success_count = sum(1 for r in results.values() if r)
     logger.info(f"BATCH COMPLETED : {success_count}/{total} SUCCEEDED !")
 
+    return results
 
-with open("personal details\\masked_all_text.json" , "r", encoding="utf-8") as f:
-    dataset = json.load(f)
-process_masked_texts(masked_texts=dataset)
+def process_masked_texts_file(input_json, output_dir, combined_output_path):
+    with open(input_json, "r", encoding="utf-8") as f:
+        dataset = json.load(f)
+ 
+    results = process_masked_texts(dataset, output_dir)
+ 
+    os.makedirs(os.path.dirname(combined_output_path), exist_ok=True)
+    with open(combined_output_path, "w", encoding="utf-8") as f:
+        json.dump(results, f, indent=2, ensure_ascii=False)
+ 
+    return results
+
+if __name__ == "__main__":
+    process_masked_texts_file(
+        input_json="personal details\\masked_all_text.json",
+        output_dir="cv_extractions",
+        combined_output_path="cv_extractions\\final_cv_details.json",
+    )

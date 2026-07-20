@@ -22,34 +22,43 @@ client = OpenAI(
 def final_CV_details(text):
     prompt = f"""You are an expert HR information extraction system.
 
-MSUT Extract skills, project, experiences, education  information from the CV text.
+Extract skills, projects, experience, and education information from the CV text provided below. Follow every rule exactly.
 
-Rules for extracting skills:
-- Return all technical and soft skills in the CV in profile_summary and soft_skills section.
+CURRENT_DATE: Date of today
+CV_TEXT: {text} 
+=== SKILLS RULES ===
+- Extract technical skills (tools, languages, frameworks, platforms) into "technical_skills". Deduplicate. Max 15 items, most relevant/prominent first.
+- Extract soft skills into "soft_skills". Deduplicate. Max 8 items.
+- Each skill is a short label only (1-4 words). No descriptions, no explanations.
+- Do not invent skills that are not stated or clearly implied by the CV content.
 
-Rules for project:
-- Return summary of each projects mentioned in the CV in project_details section.
-- Must Return technical or related keywords mentioned in the CV in keywords section.
-- Add experience details to project section.
+=== PROJECT RULES ===
+- Include at most the 5 most significant projects mentioned anywhere in the CV (including inside job/work-experience descriptions).
+- "project_details" = ONE sentence, max 20 words, covering what the project was and the person's role.
+- "keywords" = max 6 technical terms relevant to that specific project.
+- If a project was built as part of a specific job, name the job title in ≤5 words inside "project_details" — do not restate full job description.
 
-Rules for experiences:
-CALCULATION RULES (follow exactly, do not explain your steps in the output):
-- DO NOT GUESS for duration_year
-- Read entire data.
-- Find all related to experiences.
-- using your intelligence, give experiences as month counts. IT IS MUST.
-- For every job, MUST CALCULATE duration_month. IT IS ALSO MUST.
-- Finaly, MUST CALCULATE total_experience_years.
+=== EXPERIENCE RULES ===
+- Identify every job/work-experience entry in the CV, in the order they appear. Include only: title, dates, duration_month. Do not include job description text.
+- If end_date is "Present"/"Current"/"Till date", use CURRENT_DATE as the end date.
+- "duration_month" = whole number of months between start_date and end_date. Always a number, never a string.
+- "total_experience_years" = number, one decimal place, summed duration_month / 12. Do not overlap-adjust unless CV explicitly indicates concurrent jobs.
+- If no work experience is found, set "total_experience_years" to 0 and "jobs" to [].
+- Never guess dates not stated or clearly inferable (e.g. "3 years at X" is inferable). If exact months are unavailable, estimate duration_month only from what's stated — no extra commentary.
 
-Rules for education:
-- Extract O/L, A/L, degree, and certificate information if available.
-- Set "highest_qualification" to the highest completed qualification (ol, al, hnd, degree).
-- No need education institution names.
+=== EDUCATION RULES ===
+- Extract O/L, A/L, degree(s), certificate(s) if present.
+- "highest_qualification" = exactly one of: "ol", "al", "hnd", "diploma", "degree", "masters", "phd", or null.
+- Do not include institution names anywhere in the output.
+- If subject-level grades aren't listed individually, "subjects" = [] (not null).
 
-Common rules for every section:
-- Return ONLY valid JSON.
-- Do not add or remove fields.
-- Use null for missing values.
+=== GENERAL OUTPUT RULES ===
+- Output ONLY the JSON object below — no markdown, no code fences, no explanations, no extra text before or after.
+- Output compact JSON: no indentation, no line breaks, no extra whitespace between keys/values.
+- Do not add or remove any fields from the structure.
+- Use null for missing single values (strings/numbers/objects). Use [] for missing lists — never null for array fields.
+- All numeric fields (duration_month, total_experience_years, year) must be numbers, not strings.
+- Total response must stay under 2000 output tokens. If a CV has more projects/skills/jobs than the caps above allow, keep only the most relevant and drop the rest — do not summarize everything into a shorter form that still lists all items.
 
 JSON STRUCTURE:
 {{
@@ -111,7 +120,7 @@ JSON STRUCTURE:
 TEXT:
 {text}
 """
-    for attempt in range(2): 
+    for attempt in range(4): 
       try: 
         response = client.chat.completions.create(
             model = "openai/gpt-oss-120b",
@@ -120,7 +129,7 @@ TEXT:
                 "content" : prompt
             }],
             temperature=0.0,
-            max_tokens = 2500,
+            max_tokens = 3000,
             response_format={"type": "json_object"}
         )
 
@@ -158,7 +167,7 @@ TEXT:
       completion_tokens = response.usage.completion_tokens if response.usage else None
       output = (choice.message.content or "").strip()
 
-      logger.info(f"OUTPUT_TOKEN={completion_tokens}")
+      logger.info(f"OUTPUT_TOKEN = {completion_tokens}")
 
       if finish_reason == "content_filter":
           logger.warning("FUNCTION: response blocked by content_filter, retrying...")
