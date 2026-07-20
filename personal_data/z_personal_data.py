@@ -81,9 +81,11 @@ def personal_data_json(input_json, output_json):
             logger.exception("Failded preprocesing %s: %s",i,e)
             results[i] = None
         
+    os.makedirs(os.path.dirname(output_json), exist_ok=True)
     with open(output_json,"w",encoding="utf-8") as f:
         json.dump(results,f,indent=4)
     
     return results
 
-print(personal_data_json("row_ocr_output\\row_ocr_cv_deatils.json","personal details\\full_personal_data.json"))
+if __name__ == "__main__":
+    print(personal_data_json("row_ocr_output\\row_ocr_cv_deatils.json","personal details\\full_personal_data.json"))
