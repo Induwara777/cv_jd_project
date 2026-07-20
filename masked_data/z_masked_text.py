@@ -21,6 +21,10 @@ def llm_text(peronal_json,extract_json,output_json):
     
     try:
         for cv_id,cv_text in cv_data.items():
+            if not cv_text:
+                masked_json[cv_id] = None
+                continue
+
             info = personal_data.get(cv_id,{})
             value = [ str(v).strip() for v in info.values() if v ]
             pattern = "|".join(re.escape(x) for x in value) if value else None
@@ -49,12 +53,16 @@ def llm_text(peronal_json,extract_json,output_json):
             # final one
             masked3 = masked3 if masked3 else None
             masked_json[cv_id] = masked3
+        os.makedirs(os.path.dirname(output_json), exist_ok=True)
         with open(output_json,"w",encoding="utf-8") as f:
             json.dump(masked_json,f,indent=2)
     except Exception as e:
         logger.exception(f"ENTIRE CV TEXT MASKING PROCESS IS BROKEN! : {e}")
     
     return masked_json
-llm_text(peronal_json="personal details\\full_personal_data.json",
-         extract_json="row_ocr_output\\row_ocr_cv_deatils.json",
-         output_json="personal details\\masked_all_text.json")
+
+
+if __name__ == "__main__":
+    llm_text(peronal_json="personal details\\full_personal_data.json",
+             extract_json="row_ocr_output\\row_ocr_cv_deatils.json",
+             output_json="personal details\\masked_all_text.json")
