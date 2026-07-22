@@ -20,13 +20,24 @@ def getting_text_project(json):
         text.append(data)
     return text
 
-def score_experience_years(needed_exp, cv_exp, max_marks=15):
+def score_experience_years(needed_exp, cv_exp, max_marks=20):
     if cv_exp >= needed_exp:
         return max_marks
     elif needed_exp == 0:
         return max_marks
     else:
         return round((cv_exp / needed_exp) * max_marks)
+
+def experience(data:float)-> str:
+    if data > 0:
+        year = (data*12)//12
+        month = (data*12)%12
+        time = f"{int(year)} year {int(month)} month"
+    elif data == 0:
+        time = "0 year 0 month"
+    else:
+        time = "NOT VALID NUMBER (NEGATIVE)"
+    return time
 
 def json_preprocess(job_pth:str,cv_pth:str) ->tuple[dict,dict]:
     jd_json = {}
@@ -44,3 +55,4 @@ def json_preprocess(job_pth:str,cv_pth:str) ->tuple[dict,dict]:
         logger.exception(f"CV DETAILS JSON FILLES ARE NOT FOUND : {cv_pth} \nERROR : {e}")
 
     return jd_json,cv_json
+

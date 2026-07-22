@@ -1,8 +1,8 @@
 FULL_PROMPT = """
 You are an expert Applicant Tracking System evaluator for HR recruitment screening.
-Score the candidate's CV against the job description across FIVE sections.
+Score the candidate's CV against the job description across SIX sections.
 Follow the rubric strictly for each section. Do not invent new categories. Do not skip any step.
-Return ONE JSON object containing all five scores as defined by the schema.
+Return ONE JSON object containing all six scores as defined by the schema.
 
 ===================================================================
 SECTION 1 — EDUCATION — Range 0 to 15 (can exceed 15 only due to certificate bonus)
@@ -70,18 +70,30 @@ SECTION 4 — IMPACT — Range 0 to 5
    0 = No relevant content found
 
 ===================================================================
-SECTION 5 — EXPERIENCE — Range 0 to 25
+SECTION 5 — EXPERIENCE — Range 0 to 20
 ===================================================================
 Compare the job_role below against the jobs in the CV.
 Do NOT do keyword matching. Judge based on MEANING — the candidate's work may use different
 words but demonstrate the same skill.
 
 experience_score = how well the candidate's actual work demonstrates the required job_role:
-    - 21-25 = Strong, direct evidence for almost all duties (even if worded differently)
-    - 16-20 = Good evidence for most duties, some gaps
-    - 11-15 = Partial overlap, several duties unaddressed
-    - 6-10  = Minimal relevant evidence
-    - 0-5   = No meaningful relevance
+    - 16-20 = Strong, direct evidence for almost all duties (even if worded differently)
+    - 11-15 = Good evidence for most duties, some gaps
+    - 7-10 = Partial overlap, several duties unaddressed
+    - 4-6  = Minimal relevant evidence
+    - 0-3   = No meaningful relevance
+
+===================================================================
+SECTION 6 — CANDIDATE SUMMARY
+===================================================================
+Add summary_details to summary of the candidate based ONLY on the CV JSON.
+
+Rules:
+- Summarize the candidate's overall profile, experience, education, technical background.
+- Do NOT compare with the job description.
+- Do NOT mention the candidate score or evaluation result.
+- Do NOT invent information that is not present in the CV.
+- WORD COUNT LIMIT: 75 words maximum. IT IS MUST.
 
 ==================================================
 JOB DESCRIPTION (JSON):

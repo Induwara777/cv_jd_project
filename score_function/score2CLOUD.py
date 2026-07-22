@@ -31,7 +31,9 @@ def cv_score(job_pth,cv_pth):
         "Soft_score":"",
         "Technical_score":"",
         "Impact_score":"",
-        "Experience_score":""}
+        "Experience_score":"",
+        "Total_experience":"",
+        "summary_details":""}
     try:
         data = json_files.prepare_json_data(job_path=job_pth, cv_path=cv_pth)
     except Exception as e:
@@ -62,7 +64,9 @@ def cv_score(job_pth,cv_pth):
         score["Soft_score"] = full.get("soft_skill_score", "")
         score["Technical_score"] = full.get("technical_score", "")
         score["Impact_score"] = full.get("impact_score", "")
-        for _field in ("education_score","soft_skill_score","technical_score","impact_score"):
+        score["Total_experience"] = full.get("Total_experience", "")
+        score["summary_details"] = full.get("summary_details","")
+        for _field in ("education_score","soft_skill_score","technical_score","impact_score","Total_experience","summary_details"):
             if _field not in full:
                 logger.warning(f"[SCHEMA MISMATCH] KEY '{_field}' NOT FOUND IN FULLSCORE OUTPUT — CHECK FIELD NAMES")
         print("scoring done in ONE call. wait 15 second")
@@ -79,6 +83,12 @@ def cv_score(job_pth,cv_pth):
         score["Experience_score"] = float(full["experience_score"]) + exp_year
     except Exception as e:
         logger.error(f"THERE IS A PROBLEM IN EXPERIENCE (YEAR) OR EXPERIENCE (LLM) SCORE FUNCTION {type(e).__name__}")
+    try:
+        exp = json_preprocessing.experience(data["cv_ep"])
+        score["Total_experience"] = exp 
+    except Exception as e:
+        logger.exception(f"EXPERIENCE IS NONE")
+        score["Total_experience"] = 0
 
     return score
 
@@ -151,6 +161,28 @@ def run_batch(job_path,cv_folder):
     
     return result
 
-data = run_batch(job_path="jobpost_details_strongprompt.json",cv_folder="cv_extractions")
-print(data)
-# db.database(data)
+if __name__ == "__main__":
+    import argparse
+
+    _script_dir = os.path.dirname(os.path.abspath(__file__))
+    parser = argparse.ArgumentParser(description="Score CVs against a job spec and write results to the DB.")
+    parser.add_argument(
+        "--job-path",
+        default=os.path.join(_script_dir, "jobpost_details_strongprompt.json"),
+        help="Path to the job spec JSON. In production this comes from the uploaded job_spec file per /analyze session — this default is only for manual/local testing.",
+    )
+    parser.add_argument(
+        "--cv-folder",
+        default=os.path.join(_script_dir, "cv_extractions"),
+        help="Folder of per-CV extracted JSON files. In production this is the session's cv_extractions dir produced by /analyze — this default is only for manual/local testing.",
+    )
+    args = parser.parse_args()
+
+    logger.info(f"JOB SPEC: {args.job_path}")
+    logger.info(f"CV FOLDER: {args.cv_folder}")
+
+    data = run_batch(job_path=args.job_path, cv_folder=args.cv_folder)
+
+    logger.info(f"BATCH FINISHED — {len(data)} CV(S) PROCESSED")
+    for row in data:
+        logger.info(f"  {row.get('cv_files')}: {row.get('validation_status')}")

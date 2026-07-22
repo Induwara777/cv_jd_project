@@ -6,5 +6,8 @@ class FULLSCORE(BaseModel):
     experience_score: int
     technical_score: int
     impact_score :int
+    Total_experience: str
+    summary_details: str
+
 
 
