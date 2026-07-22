@@ -2,7 +2,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import json
-from . import z_1_ocr_databases
+from data_extraction import z_1_ocr_databases
 
 
 def extract_and_save(cv_folder="cv_files", output_path=os.path.join("row_ocr_output", "row_ocr_cv_deatils.json")):
