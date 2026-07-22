@@ -8,6 +8,27 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("httpcore").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+def is_missing(value):
+    return value is None or value == "" or value == [] or value == {}
+
+def json_valid(data: dict) -> bool:
+    if is_missing(data.get("technical_skills")):
+        return False
+
+    if is_missing(data.get("soft_skills")):
+        return False
+
+    if is_missing(data.get("projects")):
+        return False
+
+    if is_missing(data.get("experience", {}).get("total_experience_years")):
+        return False
+
+    if is_missing(data.get("education", {}).get("highest_qualification")):
+        return False
+
+    return True
+
 def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
     results = {}
     total = len(masked_texts)
@@ -21,6 +42,14 @@ def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
         try:
             data = full.final_CV_details(text)
             flag = True
+            json_val = json_valid(data)
+            if json_val == False:
+                try:
+                    time.sleep(20)
+                    data = full.final_CV_details(text)
+                except Exception as e:
+                    logger.exception("ALL FIELDS ARE NOT EXTARCTED")
+                    data = {}
         except Exception as e:
             logger.exception(f"UNEXPECTED FAILURE ON CV {idx}: \n{type(e).__name__} \nError - {e}")
             flag = False

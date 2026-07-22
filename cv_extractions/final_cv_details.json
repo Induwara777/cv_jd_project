@@ -1,0 +1,118 @@
+{
+  "0": {
+    "technical_skills": [
+      "C#",
+      "Unity",
+      "Game Development",
+      "Project Management",
+      "Statistical Math",
+      "Artificial Intelligence",
+      "Algorithms",
+      "Performance Optimization",
+      "Code Review",
+      "Hybrid Work Management"
+    ],
+    "soft_skills": [
+      "Leadership",
+      "Mentoring",
+      "Collaboration",
+      "Communication",
+      "Problem Solving",
+      "Team Management",
+      "Adaptability",
+      "Innovation"
+    ],
+    "projects": [
+      {
+        "project_name": "Open Source Casino Game Engine",
+        "project_details": "Contributed to open-source casino engine development as Lead Game Developer.",
+        "keywords": [
+          "C#",
+          "Unity",
+          "Game Engine",
+          "Performance",
+          "Scalability",
+          "Open Source"
+        ]
+      },
+      {
+        "project_name": "2D Puzzle Mobile Game",
+        "project_details": "Led coding and debugging of 2D puzzle mobile game as Senior Unity Developer.",
+        "keywords": [
+          "C#",
+          "Unity",
+          "Mobile",
+          "Puzzle",
+          "Debugging",
+          "Cognitive"
+        ]
+      },
+      {
+        "project_name": "Hit Casino Game",
+        "project_details": "Project managed hit casino game development as Lead Game Developer.",
+        "keywords": [
+          "C#",
+          "Unity",
+          "Casino",
+          "Project Management",
+          "Revenue",
+          "User Engagement"
+        ]
+      },
+      {
+        "project_name": "Advanced AI System",
+        "project_details": "Developed advanced AI system for strategic gameplay as Lead Game Developer.",
+        "keywords": [
+          "Artificial Intelligence",
+          "Game AI",
+          "C#",
+          "Unity",
+          "Strategic",
+          "Gameplay"
+        ]
+      },
+      {
+        "project_name": "Company-wide Hackathon Feature",
+        "project_details": "Led hackathon creating two patentpending features as Lead Game Developer.",
+        "keywords": [
+          "Innovation",
+          "Prototyping",
+          "C#",
+          "Unity",
+          "Patents",
+          "Feature Development"
+        ]
+      }
+    ],
+    "experience": {
+      "total_experience_years": 7.2,
+      "jobs": [
+        {
+          "job_title": "Lead Game Developer",
+          "duration_month": 86
+        }
+      ]
+    },
+    "education": {
+      "highest_qualification": "masters",
+      "ol": {
+        "year": null,
+        "subjects": []
+      },
+      "al": {
+        "year": null,
+        "stream": null,
+        "subjects": []
+      },
+      "degrees": [
+        {
+          "degree_name": "BSc Computer Science"
+        },
+        {
+          "degree_name": "MSc Advanced Computer Science"
+        }
+      ],
+      "certificates": []
+    }
+  }
+}

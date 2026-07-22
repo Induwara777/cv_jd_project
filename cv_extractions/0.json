@@ -2,74 +2,84 @@
   "technical_skills": [
     "C#",
     "Unity",
-    "Statistical Math",
-    "Project Management",
-    "Algorithms",
-    "Artificial Intelligence",
     "Game Development",
-    "Game Programming",
-    "Performance Optimization"
+    "Project Management",
+    "Statistical Math",
+    "Artificial Intelligence",
+    "Algorithms",
+    "Performance Optimization",
+    "Code Review",
+    "Hybrid Work Management"
   ],
   "soft_skills": [
     "Leadership",
-    "Team Management",
-    "Mentorship",
+    "Mentoring",
     "Collaboration",
     "Communication",
     "Problem Solving",
-    "Adaptability"
+    "Team Management",
+    "Adaptability",
+    "Innovation"
   ],
   "projects": [
     {
-      "project_name": "Hit Casino Game",
-      "project_details": "Led the development of a hit casino game at GameTech Studios, managing the project from concept to launch and generating over $2million in the first six months.",
-      "keywords": [
-        "C#",
-        "Unity",
-        "Casino",
-        "Game Development",
-        "Project Management"
-      ]
-    },
-    {
-      "project_name": "Company-wide Hackathon Feature Development",
-      "project_details": "Organized and led a company-wide hackathon that produced two patentpending features for the gaming platform.",
-      "keywords": [
-        "Innovation",
-        "Prototyping",
-        "C#",
-        "Unity"
-      ]
-    },
-    {
       "project_name": "Open Source Casino Game Engine",
-      "project_details": "Contributed code and enhancements to an opensource casino game engine aimed at improving performance and scalability.",
+      "project_details": "Contributed to open-source casino engine development as Lead Game Developer.",
       "keywords": [
         "C#",
         "Unity",
-        "Opensource",
         "Game Engine",
-        "Scalability"
+        "Performance",
+        "Scalability",
+        "Open Source"
       ]
     },
     {
       "project_name": "2D Puzzle Mobile Game",
-      "project_details": "Led coding and debugging of a 2D puzzle mobile game that enhanced cognitive functions for users.",
+      "project_details": "Led coding and debugging of 2D puzzle mobile game as Senior Unity Developer.",
       "keywords": [
         "C#",
         "Unity",
-        "Mobile Development",
-        "Puzzle Game"
+        "Mobile",
+        "Puzzle",
+        "Debugging",
+        "Cognitive"
       ]
     },
     {
-      "project_name": "Advanced AI System for Strategic Gameplay",
-      "project_details": "Developed an advanced AI system that increased game complexity and user engagement by 25%.",
+      "project_name": "Hit Casino Game",
+      "project_details": "Project managed hit casino game development as Lead Game Developer.",
       "keywords": [
-        "Artificial Intelligence",
         "C#",
         "Unity",
-        "Game AI"
+        "Casino",
+        "Project Management",
+        "Revenue",
+        "User Engagement"
+      ]
+    },
+    {
+      "project_name": "Advanced AI System",
+      "project_details": "Developed advanced AI system for strategic gameplay as Lead Game Developer.",
+      "keywords": [
+        "Artificial Intelligence",
+        "Game AI",
+        "C#",
+        "Unity",
+        "Strategic",
+        "Gameplay"
+      ]
+    },
+    {
+      "project_name": "Company-wide Hackathon Feature",
+      "project_details": "Led hackathon creating two patentpending features as Lead Game Developer.",
+      "keywords": [
+        "Innovation",
+        "Prototyping",
+        "C#",
+        "Unity",
+        "Patents",
+        "Feature Development"
       ]
     }
   ],
@@ -79,14 +89,6 @@
       {
         "job_title": "Lead Game Developer",
         "duration_month": 86
-      },
-      {
-        "job_title": "Senior Unity Developer",
-        "duration_month": null
-      },
-      {
-        "job_title": "Game Programmer",
-        "duration_month": null
       }
     ]
   },
@@ -103,10 +105,10 @@
     },
     "degrees": [
       {
-        "degree_name": "BSc in Computer Science"
+        "degree_name": "BSc Computer Science"
       },
       {
-        "degree_name": "MSc in Advanced Computer Science"
+        "degree_name": "MSc Advanced Computer Science"
       }
     ],
     "certificates": []
