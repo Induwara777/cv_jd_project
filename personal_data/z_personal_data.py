@@ -35,7 +35,7 @@ def preprocess(ext_data, llm_per_data):
         result["phone"]= phone[0] if phone else ""
     
     except Exception as e:
-        logger.warnings("Phome number extraction is failed!!!.")
+        logger.warning("Phone number extraction is failed!!!.")
     
     # Email
     try:
