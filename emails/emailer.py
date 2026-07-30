@@ -1,3 +1,5 @@
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -7,8 +9,14 @@ logger = logging.getLogger(__name__)
 
 def email_sending(receiver_email:str, sender_email:str,subject:str,email_body_plain:str,email_body_html:str)->str:
     try:
-        app_password = "masked"
-        sender_email = "harshaniherath2002@gmail.com"
+        app_password = "PASSWARD"
+        if not app_password:
+            logging.error("SMTP_APP_PASSWORD is not set — cannot send email.")
+            return "EMAIL FAILED. Server is missing SMTP credentials."
+
+        # Respect whatever sender_email the caller passed in (this must match
+        # the FROM address shown to the reviewer in EmailComposeWindow, or
+        # people will reply to an address nobody's watching).
         msg = MIMEMultipart("alternative")
         msg["Subject"] = subject
         msg["From"] = f"Recruitment Team <{sender_email}>"  
