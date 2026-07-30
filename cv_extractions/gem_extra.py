@@ -1,24 +1,20 @@
 import sys, os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import json
-from openai import OpenAI
-import os
-from ocr.z_ocr_fun import extraction
 import logging
-from groq import RateLimitError, BadRequestError
-logger = logging.getLogger(__name__)
 import time
 import re
+from google import genai
+from google.genai import types, errors
 
+logger = logging.getLogger(__name__)
 
-# LLM API KEY
-os.environ['OPENAI_API_KEY'] = "api_key"
-client = OpenAI(
-    base_url="https://api.groq.com/openai/v1"
-)
+try:
+    os.environ["GEMINI_API_KEY"] = "API KEY"
+    client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+except Exception as e:
+    logger.error(f"THERE IS A PROBLEM IN GEMINI FLASH API KEY {type(e).__name__}")
 
-
-# Full fucntion
 def final_CV_details(text):
     prompt = f"""You are an expert HR information extraction system.
 
@@ -58,7 +54,7 @@ CV_TEXT: {text}
 - Do not add or remove any fields from the structure.
 - Use null for missing single values (strings/numbers/objects). Use [] for missing lists — never null for array fields.
 - All numeric fields (duration_month, total_experience_years, year) must be numbers, not strings.
-- Total response must stay under 2000 output tokens. If a CV has more projects/skills/jobs than the caps above allow, keep only the most relevant and drop the rest — do not summarize everything into a shorter form that still lists all items.
+
 
 JSON STRUCTURE:
 {{
@@ -116,67 +112,77 @@ JSON STRUCTURE:
     ]
   }}
 }}
-
-TEXT:
-{text}
 """
-    for attempt in range(2): 
-      try: 
-        response = client.chat.completions.create(
-            model = "openai/gpt-oss-120b",
-            messages = [{
-                "role":"user",
-                "content" : prompt
-            }],
-            temperature=0.0,
-            response_format={"type": "json_object"},
-            reasoning_effort= "low"
-        )
+    output = ""
+    for attempt in range(2):
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.5-flash",  # confirm exact model name before deploying
+                contents=prompt,
+            )
 
-      except RateLimitError as e:
-          retry = e.response.headers.get("retry-after")
-          logger.warning(f"LLM: RATE LIMITED, RETRY_AFTER={retry}")
-          if retry:
-              time.sleep(float(retry))
-              continue        
-  
-      except Exception as e:
-          status_code = getattr(e,"status_code",None)
-          if status_code == 400:
-            logger.exception(f"LLM DON'T PROVIDE VALID JSON. PLEASE INCREASE MAX_TOKEN_SIZE !!!. \n{type(e).__name__} \nERROR- {e}")
-            break
-          elif status_code == 401:
-             logger.exception(f"LLM API KEY IS INVALID OR MISSING API KEY! \n{type(e).__name__} \nERROR- {e}")
-             break
-          elif status_code == 403:
-             logger.exception(f"ACESS OF LLM API KEY IS DENIED! \n{type(e).__name__} \nERROR- {e}")
-             break
-          elif status_code == 404:
-             logger.exception(f"LLM API NAME IS WRONG! \n{type(e).__name__} \nERROR- {e}")
-             break  
-          elif status_code == 413:
-             logger.exception(f"YOUR PROMPT EXCEEDED SIZE LIMIT. REDUCE IT. \n{type(e).__name__} \nERROR- {e}")
-             break
-          else:
-            logger.exception(f"LLM FUNCTION API CALL FAILED\n{type(e).__name__} \nERROR- {e}")
+        except errors.ClientError as e:
+            if e.code == 429:
+                wait = 60
+                logger.exception(f"LLM: RATE LIMITED (429), BACKING OFF SECOND: {wait}")
+                print(wait)
+                time.sleep(wait)
+                continue
+            elif e.code == 400:
+                logger.exception(f"LLM BAD REQUEST / INVALID JSON. CHECK MAX_OUTPUT_TOKENS.")
+                break
+            elif e.code == 401:
+                logger.exception(f"LLM API KEY IS INVALID OR MISSING!")
+                break
+            elif e.code == 403:
+                logger.exception(f"ACCESS TO LLM API DENIED!")
+                break
+            elif e.code == 404:
+                logger.exception(f"LLM MODEL NAME IS WRONG!")
+                break
+            elif e.code == 413:
+                logger.exception(f"PROMPT EXCEEDED SIZE LIMIT. REDUCE IT.")
+                break
+            else:
+                logger.exception(f"LLM CLIENT ERROR")
+                print("4")
+                time.sleep(4)
+                continue
+
+        except errors.ServerError as e:
+            logger.exception(f"LLM SERVER ERROR (5xx)")
+            print("4")
             time.sleep(4)
             continue
 
-      choice = response.choices[0]
-      finish_reason = getattr(choice, "finish_reason", None)
-      completion_tokens = response.usage.completion_tokens if response.usage else None
-      output = (choice.message.content or "").strip()
+        except Exception as e:
+            logger.exception(f"LLM CALL FAILED UNEXPECTEDLY \n{type(e).__name__}")
+            print("4")
+            time.sleep(4)
+            continue
 
-      logger.info(f"OUTPUT_TOKEN = {completion_tokens}")
+        candidate = response.candidates[0] if response.candidates else None
+        finish_reason = getattr(candidate, "finish_reason", None)
+        completion_tokens = (
+            response.usage_metadata.candidates_token_count
+            if getattr(response, "usage_metadata", None) else None
+        )
+        output = (response.text or "").strip() if response.text else ""
 
-      if finish_reason == "content_filter":
-          logger.warning("FUNCTION: response blocked by content_filter, retrying...")
-          continue
+        logger.info(f"OUTPUT_TOKEN = {completion_tokens}")
 
-      if output:
-          break 
+        if finish_reason == "SAFETY":
+            logger.warning("LLM: response blocked by safety filter, retrying...")
+            continue
+
+        if finish_reason == "MAX_TOKENS":
+            logger.warning("LLM: response truncated at MAX_TOKENS — consider raising max_output_tokens")
+
+        if output:
+            break
 
     if not output:
+        logger.error("LLM FUNCTION FAILED: EMPTY OUTPUT AFTER ALL RETRIES...")
         return {}
 
     output_clean = output.strip().encode("ascii", "ignore").decode()
@@ -184,6 +190,6 @@ TEXT:
     try:
         data = json.loads(cleaned)
     except Exception as e:
-        logger.exception(f"PROJECT FUNCTION JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
-        data ={}
+        logger.exception(f"JSON PARSE FAILED\n{type(e).__name__} - {e}\nRAW OUTPUT: {output!r}")
+        data = {}
     return data

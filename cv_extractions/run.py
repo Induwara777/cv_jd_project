@@ -42,16 +42,17 @@ def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
         try:
             data = full.final_CV_details(text)
             flag = True
-            json_val = json_valid(data)
-            if json_val == False:
-                try:
-                    time.sleep(20)
-                    data = full.final_CV_details(text)
-                except Exception as e:
-                    logger.exception("ALL FIELDS ARE NOT EXTARCTED")
-                    data = {}
+            # json_val = json_valid(data)
+            # if json_val == False:
+            #     try:
+            #         print("WATING 20S")
+            #         time.sleep(20)
+            #         data = full.final_CV_details(text)
+            #     except Exception as e:
+            #         logger.exception("ALL FIELDS ARE NOT EXTARCTED")
+            #         data = {}
         except Exception as e:
-            logger.exception(f"UNEXPECTED FAILURE ON CV {idx}: \n{type(e).__name__} \nError - {e}")
+            logger.exception(f"UNEXPECTED FAILURE ON CV {idx}: \n{type(e).__name__}")
             flag = False
             data = {}
 
@@ -63,8 +64,9 @@ def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
         end = time.monotonic()
         elapsed = end - start
         if elapsed < 20:
-            waiting = float(20) - float(elapsed)
+            waiting = float(15) - float(elapsed)
             if waiting > 0:
+                print(waiting)
                 time.sleep(waiting)
         with open(os.path.join(output_dir, f"{idx}.json"), "w", encoding="utf-8") as f:
             json.dump(results[idx], f, indent=2, ensure_ascii=False)
@@ -75,14 +77,18 @@ def process_masked_texts(masked_texts: dict,output_dir:str) -> dict:
     return results
 
 def process_masked_texts_file(input_json, output_dir, combined_output_path):
-    with open(input_json, "r", encoding="utf-8") as f:
-        dataset = json.load(f)
- 
-    results = process_masked_texts(dataset, output_dir)
- 
-    os.makedirs(os.path.dirname(combined_output_path), exist_ok=True)
-    with open(combined_output_path, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2, ensure_ascii=False)
+    try:
+        with open(input_json, "r", encoding="utf-8") as f:
+            dataset = json.load(f)
+    
+        results = process_masked_texts(dataset, output_dir)
+    
+        os.makedirs(os.path.dirname(combined_output_path), exist_ok=True)
+        with open(combined_output_path, "w", encoding="utf-8") as f:
+            json.dump(results, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        logger.exception("ERROR IN FINAL FUNCTION")
+        results = {}
  
     return results
 
