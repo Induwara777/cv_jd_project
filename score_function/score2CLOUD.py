@@ -140,7 +140,7 @@ def run_batch(job_path,cv_folder):
             wait = end-start
             if wait < 50:
                 waiting = 50-wait
-                print("wating 50 second")
+                print(f"WATING {wait} SECOND...")
                 time.sleep(waiting)
                 continue
             else:

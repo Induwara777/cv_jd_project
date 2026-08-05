@@ -3,10 +3,13 @@ from sqlalchemy import create_engine, text
 import logging
 logger = logging.getLogger(__name__)
 
-DB_USER = "root"
-DB_PASS = "masked"
-DB_HOST = "localhost"
-DB_NAME = "cv_score"
+DB_USER = os.environ.get("DB_USER", "root")
+DB_PASS = os.environ.get("DB_PASS", "masked")
+DB_HOST = os.environ.get("DB_HOST", "localhost")
+DB_NAME = os.environ.get("DB_NAME", "cv_score")
+
+if not DB_PASS:
+    logger.warning("DB_PASS is not set — set it via environment variable, don't hardcode it in db.py.")
 
 engine = create_engine(f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:3306/{DB_NAME}")
 INT_FIELDS = ["Education_score", "Soft_score", "Technical_score", "Impact_score", "Experience_score"]
@@ -121,6 +124,44 @@ def getting_details_from_db():
         })
 
     return leaderboard
+
+
+def get_all_personal_details():
+    """
+    Returns name/phone/email/location for every candidate currently in the
+    scores table, joined against personal_details by filename stem — same
+    join pattern as getting_details_from_db(). Used by the dedicated
+    "Candidate Directory" page, which is the only place phone/email are
+    shown in bulk (the main leaderboard intentionally omits them).
+    """
+    query = text("""
+                 SELECT Index_No, cv_files
+                 FROM scores
+                 ORDER BY Index_No;
+                 """)
+    with engine.connect() as conn:
+        rows = conn.execute(query).fetchall()
+
+    personal_query = text("SELECT cv_files, name, phone, email, location FROM personal_details;")
+    with engine.connect() as conn:
+        personal_rows = conn.execute(personal_query).fetchall()
+    personal_by_stem = {r.cv_files: dict(r._mapping) for r in personal_rows}
+
+    directory = []
+    for row in rows:
+        row = dict(row._mapping)
+        stem = _name_from_cv_file(row["cv_files"])
+        personal = personal_by_stem.get(stem, {})
+
+        directory.append({
+            "id": str(row["Index_No"]),
+            "name": personal.get("name") or stem,
+            "email": personal.get("email") or None,
+            "phone": personal.get("phone") or None,
+            "location": personal.get("location") or None,
+        })
+
+    return directory
 
 
 def get_candidate_details(candidate_id):

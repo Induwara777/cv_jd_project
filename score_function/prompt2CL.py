@@ -20,29 +20,36 @@ SECTION 1 — EDUCATION — Range 0 to 15 (can exceed 15 only due to certificate
    Step 2 — Score ONLY the matching section from the CV, based on qualification_type:
       a) If qualification_type = "degree":
          Compare CV degree(s) vs JD required field of study:
-         - Highly related degree -> 10-15
-         - Less related / loosely related degree -> 5-10
-         - Not related at all -> below 5
+         - Over related degree -> 15 (required BSc, but CV has MSc/Phd)
+         - Exactly related degree -> 15
+         - Highly related degree -> 13
+         - Less related  degree -> 10
+         - Not related at all -> 5
          -> This becomes education_base_score. Do NOT score AL or OL.
 
       b) If qualification_type = "al":
          Compare CV A/L results vs JD required A/L subjects/grades:
-         - All required subjects/grades obtained -> 10-15
-         - At least one required subject/grade NOT obtained -> below 10
+         - All required subjects/grades obtained -> 15
+         - most required subjects/grades obtained -> 10
+         - less required subjects/grades obtained -> 7
+         - less required subjects/grades obtained -> 4
          -> This becomes education_base_score. Do NOT score degree or OL.
 
       c) If qualification_type = "ol":
          Compare CV O/L results vs JD required O/L subjects/grades:
-         - All required subjects/grades obtained -> 10-15
-         - At least one required subject/grade NOT obtained -> below 10
+         - All required subjects/grades obtained -> 15
+         - most required subjects/grades obtained -> 10
+         - less required subjects/grades obtained -> 7
+         - less required subjects/grades obtained -> 4
          -> This becomes education_base_score. Do NOT score degree or AL.
 
    Step 3 — Certificate bonus (always applies, regardless of qualification_type):
       - If CV lists certificates/courses clearly related to the JD's field or required skills,
-        add +1 to education_base_score (bonus only, can push total above 15 — this is allowed).
+        add +1 to education_base_score (bonus only, can not over 15).
       - If no relevant certificates, add +0.
 
    -> education_score = education_base_score + certificate_bonus.
+
 
 ===================================================================
 SECTION 2 — SOFT SKILLS — Range 0 to 5
@@ -53,21 +60,30 @@ Compare CV soft skills against JD soft skill requirements.
 ===================================================================
 SECTION 3 — TECHNICAL SKILLS — Range 0 to 35
 ===================================================================
-   - If MOST of technical_skill of CV contain JD's "tech_preffered" -> technical_score 30-35
-   - If MOST of technical_skill of CV contain JD's "tech_required" but NOT the preferred ones -> technical_score 23-30
-   - If LESS of technical_skill of CV contain JD's "tech_required" but NOT the preferred ones -> technical_score 15-22
-   - If technical_skill of CV is missing JD's "tech_required" -> technical_score below 15
+PART 1 — Required skills (compare candidate's technical_skill list against JD's "tech_required" list). Score based on the fraction of tech_required skills present in the candidate's list:
+- All required skills present (full match) -> 25
+- About 3/4 of required skills present -> 20
+- About half of required skills present -> 15
+- About 1/4 of required skills present -> 10
+- None of the required skills present -> 0
+
+PART 2 — Preferred skills (compare candidate's technical_skill list against JD's "tech_preferred" list). Score based on the fraction of tech_preferred skills present in the candidate's list:
+- All preferred skills present (full match) -> 10
+- About 3/4 of preferred skills present -> 7
+- About half of preferred skills present -> 5
+- About 1/4 of preferred skills present -> 3
+- None of the preferred skills present -> 0
+
+technical_score = required_score + preferred_score (e.g. half required (15) + 1/4 preferred (3) = 18).
+Return only the final technical_score as a number.
 
 ===================================================================
-SECTION 4 — IMPACT — Range 0 to 5
+SECTION 4 — IMPACT — Range 3 to 5
 ===================================================================
    impact_score guide:
    5 = Almost all points are quantified with clear results and strong action verbs
    4 = Most points show results, a few are vague
    3 = Mix of results-driven and task-driven points
-   2 = Mostly describes duties/tasks, little quantification
-   1 = No measurable outcomes at all
-   0 = No relevant content found
 
 ===================================================================
 SECTION 5 — EXPERIENCE — Range 0 to 20
@@ -77,11 +93,12 @@ Do NOT do keyword matching. Judge based on MEANING — the candidate's work may 
 words but demonstrate the same skill.
 
 experience_score = how well the candidate's actual work demonstrates the required job_role:
-    - 16-20 = Strong, direct evidence for almost all duties (even if worded differently)
-    - 11-15 = Good evidence for most duties, some gaps
-    - 7-10 = Partial overlap, several duties unaddressed
-    - 4-6  = Minimal relevant evidence
-    - 0-3   = No meaningful relevance
+         - Fully matched (4/4 or ~90-100% duties) -> 20 (Strong, direct evidence for almost all duties, even if worded differently)
+         - 3/4 matched (~70-89% duties) -> 17 (Good evidence for most duties, some gaps)
+         - 1/2 matched (~40-69% duties) -> 14 (Partial overlap, several duties unaddressed)
+         - 1/4 matched (~15-39% duties) -> 10 (Minimal relevant evidence)
+         - Less than 1/4 matched (<15% duties, or weak keyword-only overlap) -> 5 (No meaningful relevance)
+         -> This becomes experience_base_score. Do NOT score based on years  alone, only duty-evidence overlap.
 
 ===================================================================
 SECTION 6 — CANDIDATE SUMMARY
