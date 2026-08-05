@@ -9,23 +9,20 @@ from groq import RateLimitError, BadRequestError
 logger = logging.getLogger(__name__)
 import time
 import re
-
+from datetime import date
 
 # LLM API KEY
-os.environ['OPENAI_API_KEY'] = "api_key"
+os.environ['OPENAI_API_KEY'] = "masked"
 client = OpenAI(
     base_url="https://api.groq.com/openai/v1"
 )
 
-
-# Full fucntion
-def final_CV_details(text):
-    prompt = f"""You are an expert HR information extraction system.
-
+# SYSTEM PROMPT
+def system_prompt()->str:
+   current_date = date.today().isoformat()
+   return f"""You are an expert HR information extraction system.
 Extract skills, projects, experience, and education information from the CV text provided below. Follow every rule exactly.
-
-CURRENT_DATE: Date of today
-CV_TEXT: {text} 
+CURRENT_DATE = {current_date}
 === SKILLS RULES ===
 - Extract technical skills (tools, languages, frameworks, platforms) into "technical_skills". Deduplicate. Max 15 items, most relevant/prominent first.
 - Extract soft skills into "soft_skills". Deduplicate. Max 8 items.
@@ -58,7 +55,6 @@ CV_TEXT: {text}
 - Do not add or remove any fields from the structure.
 - Use null for missing single values (strings/numbers/objects). Use [] for missing lists — never null for array fields.
 - All numeric fields (duration_month, total_experience_years, year) must be numbers, not strings.
-- Total response must stay under 2000 output tokens. If a CV has more projects/skills/jobs than the caps above allow, keep only the most relevant and drop the rest — do not summarize everything into a shorter form that still lists all items.
 
 JSON STRUCTURE:
 {{
@@ -116,18 +112,29 @@ JSON STRUCTURE:
     ]
   }}
 }}
-
-TEXT:
-{text}
 """
-    for attempt in range(2): 
+
+# USER PROMPT
+def user_prompt(text:str)->str:
+   if text is None:
+      return "CV_TEXT: {THERE IS NOT TEXT DATA OF THIS CV.}"
+   else:
+      cv_text = f"CV_TEXT: {text}" 
+      return cv_text
+      
+
+
+# Full fucntion
+def final_CV_details(txt):
+    output = None
+    for attempt in range(3): 
       try: 
         response = client.chat.completions.create(
             model = "openai/gpt-oss-120b",
-            messages = [{
-                "role":"user",
-                "content" : prompt
-            }],
+            messages = [
+               {"role":"system" , "content":system_prompt()},
+               {"role":"user","content":user_prompt(text=txt)}
+            ],
             temperature=0.0,
             response_format={"type": "json_object"},
             reasoning_effort= "low"
@@ -165,7 +172,7 @@ TEXT:
       choice = response.choices[0]
       finish_reason = getattr(choice, "finish_reason", None)
       completion_tokens = response.usage.completion_tokens if response.usage else None
-      output = (choice.message.content or "").strip()
+      output = (choice.message.content or "").strip() if choice else None
 
       logger.info(f"OUTPUT_TOKEN = {completion_tokens}")
 
@@ -174,9 +181,11 @@ TEXT:
           continue
 
       if output:
-          break 
+         break
+      else:
+         continue
 
-    if not output:
+    if output is None:
         return {}
 
     output_clean = output.strip().encode("ascii", "ignore").decode()

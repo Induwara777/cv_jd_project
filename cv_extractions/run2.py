@@ -14,20 +14,25 @@ def is_missing(value):
     return value is None or value == "" or value == [] or value == {}
 
 
-def json_valid(data: dict) -> bool:
-    if is_missing(data.get("technical_skills")):
+def json_valid(data) -> bool:
+    if not isinstance(data, dict):
         return False
 
-    if is_missing(data.get("soft_skills")):
+    if not isinstance(data.get("technical_skills"), list) or is_missing(data.get("technical_skills")):
         return False
 
-    if is_missing(data.get("projects")):
+    if not isinstance(data.get("soft_skills"), list) or is_missing(data.get("soft_skills")):
         return False
 
-    if is_missing(data.get("experience", {}).get("total_experience_years")):
+    if not isinstance(data.get("projects"), list) or is_missing(data.get("projects")):
         return False
 
-    if is_missing(data.get("education", {}).get("highest_qualification")):
+    experience = data.get("experience")
+    if not isinstance(experience, dict) or is_missing(experience.get("total_experience_years")):
+        return False
+
+    education = data.get("education")
+    if not isinstance(education, dict) or is_missing(education.get("highest_qualification")):
         return False
 
     return True
@@ -125,7 +130,7 @@ def process_and_score_texts(masked_texts: dict, job_spec_path: str, cv_details_d
         # ---------- Pacing: ONE wait covering BOTH LLM calls for this CV ----------
         # Tune MIN_GAP_SECONDS to your actual combined RPM/TPM budget across
         # both the extraction model and the scoring model.
-        MIN_GAP_SECONDS = 35
+        MIN_GAP_SECONDS = 20 
         elapsed = time.monotonic() - start
         if elapsed < MIN_GAP_SECONDS:
             waiting = MIN_GAP_SECONDS - elapsed
